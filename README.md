@@ -1,4 +1,12 @@
-# Next.js + Tailwind CSS Example
+# Next.js + Tailwind CSS Example - DataViz
+
+Part 1: https://www.youtube.com/watch?v=2LhoCfjm8R4 5:17:44
+Part 2: https://www.youtube.com/watch?v=H2qPeJx1RDI
+
+## Steps
+
+> npx create-next-app -e with-tailwindcss next-visualization
+> npm install --save @types/d3
 
 This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
 
