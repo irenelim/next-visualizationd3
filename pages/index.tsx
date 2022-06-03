@@ -48,6 +48,11 @@ const Home: NextPage = () => {
               <a>Temperature Lines</a>
             </Link>
           </li>
+          <li>
+            <Link href="/worldmap">
+              <a>World Map</a>
+            </Link>
+          </li>
           
         </ul>
       </main>

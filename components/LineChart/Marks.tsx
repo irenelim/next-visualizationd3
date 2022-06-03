@@ -14,8 +14,6 @@ interface Props {
 export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat, circleRadius }: Props) => (
     <g className="marks">
         <path
-         fill="none"
-         stroke="black"
          d={
             line()
             .x(d => xScale(xValue(d)))
