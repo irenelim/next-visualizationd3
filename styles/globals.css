@@ -24,6 +24,10 @@
     fill: #635f5d;
 }
 
+.dropdown-label {
+    color: #635f5d;
+}
+
 .marks circle {
     fill: #137b80;
 }
@@ -33,4 +37,13 @@
     stroke-width:5 ;
     stroke-linejoin: round;
     stroke-linecap: round;
+}
+
+/* react-dropdown */
+.Dropdown-root {
+    width: 200px;
+}
+
+.Dropdown-menu {
+    max-height: 400px !important;
 }

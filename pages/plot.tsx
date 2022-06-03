@@ -1,9 +1,6 @@
 import Head from "next/head";
 import { csv } from 'd3'
-import { csvParse } from 'd3-dsv';
-import { CSSColors } from "../typings";
 import { DSVRowArray } from 'd3-dsv';
-import BarChart from "../components/BarChart";
 import PlotChart from "../components/ScatterPlot";
 
 interface Props {

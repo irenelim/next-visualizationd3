@@ -1,0 +1,7 @@
+.label, .nativeSelect {
+    font-size: 1em;
+}
+
+.nativeSelect option {
+    font-size: 1rem;
+}

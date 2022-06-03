@@ -22,7 +22,7 @@ const Home: NextPage = () => {
           </span>
         </h1>
 
-        <ul className="grid grid-cols-3 grid-rows-3 gap-4">
+        <ul className="grid grid-cols-3 grid-rows-3 gap-4 my-6">
           <li>
             <Link href="/">
               <a>Home</a>
@@ -51,6 +51,11 @@ const Home: NextPage = () => {
           <li>
             <Link href="/worldmap">
               <a>World Map</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/plot_menu">
+              <a>Plots with Selects</a>
             </Link>
           </li>
           
