@@ -1,15 +1,17 @@
-import React from "react";
-import { scaleLinear } from "d3-scale";
+import React, { useState } from "react";
+import { scaleLinear, scaleOrdinal } from "d3-scale";
 import { extent } from "d3-array";
 import { format } from "d3-format";
 import { SVGContainer } from "../../typings";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
+import ColorLegend from "./ColorLegend";
 
-const margin = { top: 20, right: 30, bottom: 68, left: 90 };
+const margin = { top: 20, right: 200, bottom: 68, left: 90 };
 const xAxisLabelOffset = 55;
 const yAxisLabelOffset = 45;
+const fadeOpacity = 0.2;
 
 interface Props extends SVGContainer {
   data: any[];
@@ -26,8 +28,10 @@ function PlotChart({
   xAttribute = "petal_length",
   yAttribute = "sepal_width",
   xAxisLabel = "Petal Length",
-  yAxisLabel = "Sepal Width"
+  yAxisLabel = "Sepal Width",
 }: Props) {
+  const [hoveredValue, setHoveredValue] = useState<string | null>(null);
+  
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
 
@@ -37,6 +41,13 @@ function PlotChart({
 
   const yValue = (d: any) => d[yAttribute];
   // const yAxisLabel = "Sepal Width";
+
+  const colorValue = (d: any) => d.species;
+  const colorLegendLabel = 'Species';
+
+  const filteredData = data.filter(d => hoveredValue === colorValue(d));
+
+  const circleRadius = 7;
 
   const siFormat = format(".2s");
   const xAxisTickFormat = (tickValue: number) =>
@@ -50,6 +61,10 @@ function PlotChart({
   const yScale = scaleLinear()
     .domain(extent(data, yValue) as [number, number])
     .range([0, innerHeight]);
+
+  const colorScale = scaleOrdinal()
+    .domain(data.map(colorValue))
+    .range(["#e6842a", "#137b80", "#8e6c8a"]);
 
   return (
     <svg className="svg" width={width} height={height}>
@@ -82,15 +97,48 @@ function PlotChart({
         >
           {yAxisLabel}
         </text>
-
+        <g transform={`translate(${innerWidth + 60}, 60)`}>
+          <text
+            x={35}
+            y={-25}
+            className="axis-label"
+            textAnchor="middle"
+          >
+            {colorLegendLabel}
+          </text>
+          <ColorLegend
+            colorScale={colorScale}
+            tickSpacing={22}
+            tickSize={circleRadius}
+            tickTextOffset={12}
+            onHover={setHoveredValue}
+            hoveredValue={hoveredValue}
+            fadeOpacity={fadeOpacity}
+          />
+        </g>
+        <g opacity={hoveredValue ? fadeOpacity : 1}>
+          <Marks
+            data={data}
+            xScale={xScale}
+            yScale={yScale}
+            xValue={xValue}
+            yValue={yValue}
+            colorScale={colorScale}
+            colorValue={colorValue}
+            tooltipFormat={xAxisTickFormat}
+            circleRadius={circleRadius}
+          />
+        </g>
         <Marks
-          data={data}
+          data={filteredData}
           xScale={xScale}
           yScale={yScale}
           xValue={xValue}
           yValue={yValue}
+          colorScale={colorScale}
+          colorValue={colorValue}
           tooltipFormat={xAxisTickFormat}
-          circleRadius={7}
+          circleRadius={circleRadius}
         />
       </g>
     </svg>

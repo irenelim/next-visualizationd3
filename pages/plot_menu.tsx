@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useState } from "react";
-import { csv } from "d3";
+import { csv } from "d3-fetch";
 import { DSVRowArray } from "d3-dsv";
 import PlotChart from "../components/ScatterPlot";
 // import NativeSelect from "../components/Select/NativeSelect";

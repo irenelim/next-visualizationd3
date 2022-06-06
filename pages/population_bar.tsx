@@ -1,7 +1,5 @@
 import Head from "next/head";
-import { csv } from 'd3'
-import { csvParse } from 'd3-dsv';
-import { CSSColors } from "../typings";
+import { csv } from 'd3-fetch'
 import { DSVRowArray } from 'd3-dsv';
 import BarChart from "../components/BarChart";
 

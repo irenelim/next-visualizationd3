@@ -1,4 +1,4 @@
-import { ScaleLinear, ScaleBand } from 'd3-scale'
+import { ScaleLinear, ScaleOrdinal } from 'd3-scale'
 
 interface Props {
     xScale: ScaleLinear<number, number, never>;
@@ -6,19 +6,22 @@ interface Props {
     data: any[];
     xValue: any;
     yValue: any;
-    tooltipFormat: (n: number) => string
-    circleRadius: number
+    tooltipFormat: (n: number) => string;
+    circleRadius: number;
+    colorScale: ScaleOrdinal<string, unknown, never>;
+    colorValue: any;
 }
 
-export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat, circleRadius }: Props) => (
+export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat, circleRadius, colorScale, colorValue }: Props) => (
     <>
         {data.map((d) => (
             <circle
                 key={Math.floor(100000 + Math.random() * 900000)}
-                className="mark"
+                // className="mark"
                 cx={xScale(xValue(d))}
                 cy={yScale(yValue(d))}
                 r={circleRadius}
+                fill={colorScale(colorValue(d)) as string}
             >
                 <title>{tooltipFormat(xValue(d))}</title>
             </circle>

@@ -1,6 +1,6 @@
 # Next.js + Tailwind CSS Example - DataVisualization with Nextjs TS & D3
 
-Part 1: https://www.youtube.com/watch?v=2LhoCfjm8R4 8:06:55
+Part 1: https://www.youtube.com/watch?v=2LhoCfjm8R4 9:34:20
 Part 2: https://www.youtube.com/watch?v=H2qPeJx1RDI
 
 ## Steps

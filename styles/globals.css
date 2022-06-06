@@ -14,13 +14,14 @@
 }
 .tick text {
     fill: #635f5d;
+    cursor: default;
 }
-.mark {
+/* .mark {
     fill: #137b80;
-}
+} */
 
 .axis-label {
-    font-size: 2.5em;
+    font-size: 2.2em;
     fill: #635f5d;
 }
 

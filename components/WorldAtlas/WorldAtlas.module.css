@@ -1,10 +1,10 @@
 .marks .land {
-    fill: #137b80;
+    fill: #d8d8d8;
 }
 
 .marks .interiors {
     fill: none;
-    stroke: #339498;
+    stroke: #ececec;
 }
 
 .marks .graticules {
@@ -13,5 +13,10 @@
 }
 
 .marks .sphere {
-    fill: #ececec;
+    fill: #fbfbfb;
+}
+
+.spot {
+    fill: #137b80;
+    opacity: 0.3;
 }

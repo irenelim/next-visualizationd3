@@ -58,6 +58,11 @@ const Home: NextPage = () => {
               <a>Plots with Selects</a>
             </Link>
           </li>
+          <li>
+            <Link href="/multiple">
+              <a>Multiple Views</a>
+            </Link>
+          </li>
           
         </ul>
       </main>

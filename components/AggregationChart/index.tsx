@@ -1,6 +1,7 @@
 import React from "react";
 import { scaleTime, scaleLinear } from "d3-scale";
-import { extent } from "d3-array";
+import { extent, bin } from "d3-array";
+import { timeMonths } from 'd3-time'
 import { timeFormat } from "d3-time-format";
 import { SVGContainer } from "../../typings";
 import { AxisBottom } from "./AxisBottom";
@@ -8,7 +9,7 @@ import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
 
 const margin = { top: 20, right: 30, bottom: 65, left: 90 };
-const xAxisLabelOffset = 55;
+const xAxisLabelOffset = 60;
 const yAxisLabelOffset = 45;
 
 interface Props extends SVGContainer {
@@ -20,7 +21,7 @@ interface Props extends SVGContainer {
   xTimeFormat: string;
 }
 
-function LineChart({
+function AggChart({
   width,
   height,
   data,
@@ -32,6 +33,8 @@ function LineChart({
 }: Props) {
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
+
+  
 
   const xValue = (d: any) => new Date(d[xAttribute]);
   // const xAxisLabel = "Time";
@@ -50,6 +53,15 @@ function LineChart({
     .domain(extent(data, yValue) as [number, number])
     .range([innerHeight, 0])
     .nice();
+
+  const [start, stop] = xScale.domain();
+  const binnedData: any = bin()
+    .value(xValue)
+    .domain(xScale.domain())
+    .thresholds(timeMonths(start, stop))
+    (data);
+  
+    console.log(binnedData);
 
   return (
     <svg className="svg" width={width} height={height}>
@@ -90,11 +102,11 @@ function LineChart({
           xValue={xValue}
           yValue={yValue}
           tooltipFormat={xAxisTickFormat}
-          circleRadius={4}
+          circleRadius={2}
         />
       </g>
     </svg>
   );
 }
 
-export default LineChart;
+export default AggChart;
