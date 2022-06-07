@@ -1,6 +1,6 @@
 import React from "react";
 import { scaleTime, scaleLinear } from "d3-scale";
-import { extent, bin } from "d3-array";
+import { extent, bin, sum, max } from "d3-array";
 import { timeMonths } from 'd3-time'
 import { timeFormat } from "d3-time-format";
 import { SVGContainer } from "../../typings";
@@ -49,19 +49,30 @@ function AggChart({
     .range([0, innerWidth])
     .nice();
 
-  const yScale = scaleLinear()
-    .domain(extent(data, yValue) as [number, number])
-    .range([innerHeight, 0])
-    .nice();
+  // const yScale = scaleLinear()
+  //   .domain(extent(data, yValue) as [number, number])
+  //   .range([innerHeight, 0])
+  //   .nice();
 
   const [start, stop] = xScale.domain();
-  const binnedData: any = bin()
-    .value(xValue)
-    .domain(xScale.domain())
-    .thresholds(timeMonths(start, stop))
-    (data);
+  const xValueNum = (d: any) => new Date(d[xAttribute]).getTime();
+  const binnedData = bin()
+    .value(xValueNum)
+    .domain([start.getTime(), stop.getTime()])
+    .thresholds(timeMonths(start, stop).map((t) => t.getTime()))(data)
+   .map((arr) => ({
+     y: sum(arr, yValue),
+     x0: arr.x0,
+     x1: arr.x1
+   })) ;
   
-    console.log(binnedData);
+  // console.log(binnedData);
+
+  const aggYValue = (d :any) => d.y;
+  const yScale = scaleLinear()
+    .domain([0, max(binnedData, aggYValue)])
+    .range([innerHeight, 0])
+    .nice();
 
   return (
     <svg className="svg" width={width} height={height}>
@@ -96,13 +107,11 @@ function AggChart({
         </text>
 
         <Marks
-          data={data}
+          data={binnedData}
           xScale={xScale}
           yScale={yScale}
-          xValue={xValue}
-          yValue={yValue}
           tooltipFormat={xAxisTickFormat}
-          circleRadius={2}
+          innerHeight={innerHeight}
         />
       </g>
     </svg>

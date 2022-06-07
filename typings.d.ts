@@ -8,3 +8,4 @@ export interface CSSColors {
     ['RGB hex value']: string;
 }
 
+

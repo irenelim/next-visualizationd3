@@ -16,9 +16,11 @@
     fill: #635f5d;
     cursor: default;
 }
-/* .mark {
+
+/* for multiple - aggregation chart*/
+.mark {
     fill: #137b80;
-} */
+}
 
 .axis-label {
     font-size: 2.2em;

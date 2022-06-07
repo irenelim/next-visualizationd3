@@ -55,6 +55,8 @@ function WorldMap() {
             height={500}
             worldAtlas={worldAtlas}
             cities={cities}
+            sizeAttribute="population"
+            coords={(d: City) => [d.lng, d.lat]}
           />
         )}
       </main>

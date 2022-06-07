@@ -1,14 +1,17 @@
 # Next.js + Tailwind CSS Example - DataVisualization with Nextjs TS & D3
 
-Part 1: https://www.youtube.com/watch?v=2LhoCfjm8R4 9:34:20
+Part 1: https://www.youtube.com/watch?v=2LhoCfjm8R4
 Part 2: https://www.youtube.com/watch?v=H2qPeJx1RDI
+
+HIV data: Choropleth Map
+Entity,Code,Year,Prevalence%
+https://gist.githubusercontent.com/curran/470752f12c027f8ff4266e7c96f26a56/raw/share-of-population-infected-with-hiv-ihme.csv
 
 ## Steps
 
 > npx create-next-app -e with-tailwindcss next-visualization
-> npm install --save @types/d3
-> npm install topojson-client
-> npm install --save @types/topojson-client
+> npm install d3 @types/d3
+> npm install topojson-client @types/topojson-client
 > npm install react-dropdown
 
 ## Reference

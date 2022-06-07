@@ -4,7 +4,6 @@ import { Marks } from "./Marks";
 import styles from'./WorldAtlas.module.css';
 import { City } from "../../hooks/useCities";
 import { max, scaleSqrt } from "d3";
-import BubbleMap from "./BubbleMap";
 
 interface Props extends SVGContainer {
   worldAtlas: any;
@@ -35,10 +34,12 @@ function Map({ width, height, worldAtlas, cities, sizeAttribute, coords }: Props
 
   return (
     <svg className={"svg"} width={width} height={height}>
-      <BubbleMap
+      <Marks
+        styles={styles}
         worldAtlas={worldAtlas}
         cities={cities}
-        sizeAttribute={sizeAttribute}
+        sizeScale={sizeScale}
+        sizeValue={sizeValue}
         coords={coords}
       />
     </svg>

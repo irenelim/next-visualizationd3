@@ -63,6 +63,11 @@ const Home: NextPage = () => {
               <a>Multiple Views</a>
             </Link>
           </li>
+          <li>
+            <Link href="/plot_log">
+              <a>Plot ScaleLog</a>
+            </Link>
+          </li>
           
         </ul>
       </main>

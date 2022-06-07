@@ -15,13 +15,13 @@ export const AxisLeft = ({ yScale, innerWidth, tickOffset }: Props) => (
         transform={`translate(0,${yScale(tickValue)})`}
       >
         <line x2={innerWidth} />
-        <text
+        {yScale.tickFormat()(tickValue) ? <text
           style={{ textAnchor: "end" }}
           dy=".32em"
           x={-tickOffset}
         >
           {tickValue}
-        </text>
+        </text> : null}
       </g>
     ))}
   </>

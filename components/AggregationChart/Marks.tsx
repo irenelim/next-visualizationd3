@@ -5,13 +5,12 @@ interface Props {
     xScale: ScaleTime<number, number, never>;
     yScale: ScaleLinear<number, number, never>;
     data: any[];
-    xValue: any;
-    yValue: any;
-    tooltipFormat: (n: Date) => string
-    circleRadius: number
+
+    tooltipFormat: (n: Date) => string;
+    innerHeight: number;
 }
 
-export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat, circleRadius }: Props) => (
+export const Marks = ({ data, xScale, yScale, tooltipFormat, innerHeight }: Props) => (
     <g className="marks">
         {/* <path
          d={
@@ -22,15 +21,18 @@ export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat, cir
             (data)!
          } 
         /> */}
-        {data.map((d) => (
-            <circle
-                key={Math.floor(100000 + Math.random() * 900000)}
-                cx={xScale(xValue(d))}
-                cy={yScale(yValue(d))}
-                r={circleRadius}
+        {data.map((d, i) => (
+            <rect
+                // key={Math.floor(100000 + Math.random() * 900000)}
+                className="mark"
+                key={i}
+                x={xScale(d.x0)}
+                y={yScale(d.y)}
+                width={xScale(d.x1) - xScale(d.x0)}
+                height={innerHeight - yScale(d.y)}
             >
-                <title>{yValue(d)}</title>
-            </circle>
+                <title>{`${tooltipFormat(d.x0)} - ${tooltipFormat(d.x1)}\n${d.y}`}</title>
+            </rect>
         ))}
     </g>
 )
