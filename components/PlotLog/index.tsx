@@ -35,7 +35,7 @@ function PlotLog({
 
   const xValue = (d: any) => new Date(d[xAttribute]);
 
-  const yValue = (d: any) => d[yAttribute];
+  const yValue = (d: any) => +d[yAttribute];
 
   const xAxisTickFormat = timeFormat('%m/%d/%Y');
 
@@ -45,7 +45,7 @@ function PlotLog({
     .nice();
 
   const yScale = scaleLog()
-    .domain([1, max(data, yValue)])
+    .domain([1, max(data, yValue) as number])
     .range([innerHeight, 0]);
 
 
