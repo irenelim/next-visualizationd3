@@ -25,17 +25,21 @@ function BubbleMap({
   sizeAttribute,
   coords,
 }: Props) {
-  const sizeValue = useMemo(() =>(d: any) => d[sizeAttribute], [sizeAttribute]);
 
-  const sizeScale = useMemo(
-    () => {
-      // console.log('compute sizeScale');
-      return scaleSqrt()
-        .domain([0, max(data, sizeValue) as number])
-        .range([0, maxRadius]);
-    },
-    [data, sizeValue, maxRadius]
+  // const sizeValue = (d: any) => d[sizeAttribute];
+  // const sizeScale = scaleSqrt()
+  // .domain([0, max(data, sizeValue) as number])
+  // .range([0, maxRadius]);
+
+  const sizeValue = useMemo(
+    () => (d: any) => d[sizeAttribute],
+    [sizeAttribute]
   );
+  const sizeScale = useMemo(() => {
+    return scaleSqrt()
+      .domain([0, max(data, sizeValue) as number])
+      .range([0, maxRadius]);
+  }, [data, sizeValue, maxRadius]);
 
   return (
     <Marks

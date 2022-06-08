@@ -37,7 +37,9 @@ function Map({ width, height, worldAtlas, cities, sizeAttribute, coords }: Props
     <svg className={"svg"} width={width} height={height}>
       <BubbleMap
         worldAtlas={worldAtlas}
-        cities={cities}
+        // cities={cities}
+        data={cities}
+        filteredData={cities}
         sizeAttribute={sizeAttribute}
         coords={coords}
       />
