@@ -1,0 +1,26 @@
+.path {
+    fill: none;
+    stroke: #137b80;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.markerLine {
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.markerText {
+    font-size: 1.6rem;
+}
+
+.title {
+    font-size: 1.8rem;
+}
+
+.axisLabel {
+    font-weight: bold;
+    font-size: 18px;
+    fill: #808080;
+}

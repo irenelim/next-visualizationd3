@@ -9,13 +9,14 @@ interface Props {
 
 export const AxisBottom = ({ xScale, innerHeight, tickFormat, tickOffset = 3 }: Props) => (
   <>
-    {xScale.ticks().map((tickValue) => (
+    {xScale.ticks().map((tickValue, i) => (
       <g
         key={tickValue.toISOString()}
         className="tick"
         transform={`translate(${xScale(tickValue)},0)`}
       >
         <line y2={innerHeight} />
+        {/* {i===0 && <line y2={innerHeight} />} */}
         <text style={{ textAnchor: "middle" }} dy=".71em" y={innerHeight + tickOffset}>
           {tickFormat(tickValue)}
         </text>

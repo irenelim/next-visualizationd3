@@ -3,9 +3,12 @@
 Part 1: https://www.youtube.com/watch?v=2LhoCfjm8R4
 Part 2: https://www.youtube.com/watch?v=H2qPeJx1RDI
 
-HIV data: Choropleth Map
-Entity,Code,Year,Prevalence%
-https://gist.githubusercontent.com/curran/470752f12c027f8ff4266e7c96f26a56/raw/share-of-population-infected-with-hiv-ihme.csv
+covid
+https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
+
+data will change ffrom time to time ✘: https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv
+
+last commit on that time (data won't change ✓): https://raw.githubusercontent.com/CSSEGISandData/COVID-19/65879a43b1a6744529f3c92c435790ecd776117d/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv
 
 ## Steps
 
@@ -13,6 +16,7 @@ https://gist.githubusercontent.com/curran/470752f12c027f8ff4266e7c96f26a56/raw/s
 > npm install d3 @types/d3
 > npm install topojson-client @types/topojson-client
 > npm install react-dropdown
+> npm install d3-delaunay
 
 ## Reference
 

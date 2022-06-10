@@ -29,7 +29,7 @@ export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat, cir
                 cy={yScale(yValue(d))}
                 r={circleRadius}
             >
-                <title>{yValue(d)}</title>
+                <title>{`${yValue(d)}\n${xValue(d)}`}</title>
             </circle>
         ))}
     </g>

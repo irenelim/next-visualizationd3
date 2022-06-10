@@ -2,13 +2,14 @@ import Head from "next/head";
 import { csv } from 'd3-fetch'
 import { DSVRowArray } from 'd3-dsv';
 import PlotChart from "../components/ScatterPlot";
+import useWindowSize from "../hooks/useWindowSize";
 
 interface Props {
     data: DSVRowArray;
   }
 
 function plots({ data }: Props) {
-    
+  const { width, height } = useWindowSize();
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
@@ -21,7 +22,7 @@ function plots({ data }: Props) {
           Iris Scatter Plot Chart
         </h1>
 
-        <PlotChart width={800} height={500} data={data} />
+        <PlotChart width={width} height={height} data={data} />
       </main>
     </div>
   )

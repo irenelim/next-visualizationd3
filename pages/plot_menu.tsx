@@ -7,6 +7,7 @@ import PlotChart from "../components/ScatterPlot";
 
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
+import useWindowSize from "../hooks/useWindowSize";
 
 interface Props {
   data: DSVRowArray;
@@ -26,6 +27,7 @@ const initialXAttribute = "petal_length";
 const initialYAttribute = "sepal_width";
 
 function plot_menu({ data }: Props) {
+  const { width, height } = useWindowSize();
   const [xAttribute, setXAttribute] = useState<string>(initialXAttribute);
   const [yAttribute, setYAttribute] = useState<string>(initialYAttribute);
 
@@ -75,8 +77,8 @@ function plot_menu({ data }: Props) {
         </div>
 
         <PlotChart
-          width={800}
-          height={500}
+          width={width}
+          height={height}
           data={data}
           xAttribute={xAttribute}
           yAttribute={yAttribute}

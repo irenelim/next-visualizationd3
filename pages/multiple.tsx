@@ -10,6 +10,7 @@ import Map from "../components/WorldAtlas";
 import AggChart from "../components/AggregationChart";
 import BubbleMap from "../components/WorldAtlas/BubbleMap";
 import DateHistogram from "../components/AggregationChart/DateHistogram";
+import useWindowSize from "../hooks/useWindowSize";
 interface WorldAtlas {
   // data: Topology;
   land: Feature<Point, GeoJsonProperties>;
@@ -21,13 +22,15 @@ interface Props {
 }
 
 const jsonUrl = "https://unpkg.com/world-atlas@2.0.2/countries-50m.json";
-const width = 960;
-const height = 500;
+// const width = 960;
+// const height = 500;
+
 const dateHistogramSize = 0.2; // 20%
 
 const xValue = (d: any) => new Date(d['Reported Date']);
 
 function multiple({ data }: Props) {
+  const { width, height } = useWindowSize();
   const { data: world } = useFetch<Topology>(jsonUrl);
   // const cities: City[] | null = useCities();
   const [worldAtlas, setWorldAtlas] = useState<WorldAtlas | null>(null);
@@ -90,17 +93,6 @@ function multiple({ data }: Props) {
             </g>
           </svg>
         )}
-
-        {/* {worldAtlas && (
-          <Map
-            width={960}
-            height={500}
-            worldAtlas={worldAtlas}
-            cities={data}
-            sizeAttribute="Total Dead and Missing"
-            coords={(d: any) => d.coords}
-          />
-        )} */}
 
         {/* <AggChart
           width={800}

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { csv } from "d3-fetch";
-import { DSVRowArray, DSV } from "d3-dsv";
-
 export interface City {
   city: string;
   lat: number;

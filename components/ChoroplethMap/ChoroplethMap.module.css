@@ -1,0 +1,22 @@
+/* .marks .land {
+    fill: #d8d8d8;
+} */
+
+.marks .interiors {
+    fill: none;
+    stroke: #ececec;
+}
+
+.marks .graticules {
+    fill: none;
+    stroke: #dadada;
+}
+
+.marks .sphere {
+    fill: #fbfbfb;
+}
+
+.spot {
+    fill: #137b80;
+    opacity: 0.3;
+}

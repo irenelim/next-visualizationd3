@@ -2,63 +2,73 @@ import Head from "next/head";
 // import { json } from 'd3'
 import { Topology } from "topojson-specification";
 import { feature, mesh } from "topojson-client";
-import Map from "../components/WorldAtlas";
+import ChoroplethMap from "../components/ChoroplethMap";
 import useFetch from "../hooks/useFetch";
-import useCities, { City } from "../hooks/useCities";
+import useData from "../hooks/useData";
 import { useEffect, useState } from "react";
 import { Feature, MultiLineString, Point, GeoJsonProperties } from "geojson";
+import { DSVRowArray } from "d3-dsv";
 import useWindowSize from "../hooks/useWindowSize";
+
 interface Props {
   // data: Topology;
-  land: Feature<Point, GeoJsonProperties>;
+  countries: Feature<Point, GeoJsonProperties>;
+  // land: Feature<Point, GeoJsonProperties>;
   // land: FeatureCollection;
   interiors: MultiLineString;
 }
 
 const jsonUrl = "https://unpkg.com/world-atlas@2.0.2/countries-50m.json";
-// const citiesUrl = 'https://gist.githubusercontent.com/mmhuntsberry/7878d234cf54df81d91e31e665a034db/raw/worldcities.csv';
+const selectedYear = '2017';
+const iso3166jsonUrl =
+  "https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/slim-3/slim-3.json";
+
 
 // function WorldMap({ data }: Props) {
 function WorldMap() {
   const { width, height } = useWindowSize();
   // const { data, error }  = useFetchD3Json<Topology>(jsonUrl);
   const { data } = useFetch<Topology>(jsonUrl);
-  const cities: City[] | null = useCities();
+  const { data: codes } = useFetch<DSVRowArray>(iso3166jsonUrl);
+  const cities: (DSVRowArray | null)= useData() as DSVRowArray;
   const [worldAtlas, setWorldAtlas] = useState<Props | null>(null);
 
   useEffect(() => {
     if (data && data.objects) {
       const { countries, land }: any = data.objects;
       const geojsonData: Props = {
-        // countries: feature(data, countries),
-        land: feature(data, land),
+        countries: feature(data, countries),
+        // land: feature(data, land),
         interiors: mesh(data, countries, (a, b) => a !== b),
       };
       setWorldAtlas(geojsonData);
     }
   }, [data]);
 
-  if (!data || !cities) {
+  if (!data || !codes || !cities) {
     return <pre>Loading...</pre>;
   }
+
+  const filteredData = cities.filter((d) => d.Year === selectedYear);
+  
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
-        <title>World Map</title>
+        <title>Choropleth Map</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-2xl font-bold">World Map</h1>
+        <h1 className="text-2xl font-bold">HIV / AIDS Choropleth Map</h1>
         {worldAtlas && (
-          <Map
+          <ChoroplethMap
             width={width}
             height={height}
             worldAtlas={worldAtlas}
-            cities={cities}
-            sizeAttribute="population"
-            coords={(d: City) => [d.lng, d.lat]}
+            data={filteredData}
+            sizeAttribute="aids"
+            codes={codes}
           />
         )}
       </main>

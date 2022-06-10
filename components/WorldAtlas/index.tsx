@@ -24,9 +24,9 @@ function Map({ width, height, worldAtlas, cities, sizeAttribute, coords }: Props
   const sizeValue = (d: any) => d[sizeAttribute];
   const maxRadius = 15;
 
-  const sizeScale = scaleSqrt()
-    .domain([0, max(cities, sizeValue) as number])
-    .range([0, maxRadius]);
+  // const sizeScale = scaleSqrt()
+  //   .domain([0, max(cities, sizeValue) as number])
+  //   .range([0, maxRadius]);
 
     // console.log(sizeScale(max(cities, sizeValue) as number));
     // console.log(max(cities, sizeValue));

@@ -8,12 +8,15 @@
     }
 }
 
+/* also for d3-axis*/
 .tick line {
-    stroke: #c0c0bb;
+    stroke: #dedede;/*  #c0c0bb; */
 
 }
+/* also for d3-axis*/
 .tick text {
     fill: #635f5d;
+    font-size: 11px;
     cursor: default;
 }
 
@@ -49,4 +52,15 @@
 
 .Dropdown-menu {
     max-height: 400px !important;
+}
+
+/* d3 axis*/
+.domain {
+    display: none;
+}
+
+/* voronoi */
+.voronoi path {
+    fill: none;
+    pointer-events: all;
 }

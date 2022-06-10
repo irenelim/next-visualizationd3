@@ -2,12 +2,14 @@ import Head from "next/head";
 import { csv } from "d3-fetch";
 import { DSVRowArray } from "d3-dsv";
 import PlotLog from "../components/PlotLog";
+import useWindowSize from "../hooks/useWindowSize";
 
 interface Props {
   data: DSVRowArray;
 }
 
 function plots({ data }: Props) {
+  const { width, height } = useWindowSize();
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
@@ -19,8 +21,8 @@ function plots({ data }: Props) {
         <h1 className="text-2xl font-bold">Plot Chart - ScaleLog</h1>
 
         <PlotLog
-          width={800}
-          height={500}
+          width={width}
+          height={height}
           data={data}
           xAttribute="Reported Date"
           yAttribute="Total Dead and Missing"

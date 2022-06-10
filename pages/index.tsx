@@ -68,6 +68,26 @@ const Home: NextPage = () => {
               <a>Plot ScaleLog</a>
             </Link>
           </li>
+          <li>
+            <Link href="/choropleth_map">
+              <a>Choropleth Map</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/covid_line">
+              <a>Covid Line</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/covid_log">
+              <a>Covid Log</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/covid_multiline">
+              <a>Covid MultiLines</a>
+            </Link>
+          </li>
           
         </ul>
       </main>
