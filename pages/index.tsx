@@ -3,8 +3,11 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import FollowPoint from "../components/FollowPoint";
+import SimpleSvg from "../components/SimpleSvg";
+import useWindowSize from "../hooks/useWindowSize";
 
 const Home: NextPage = () => {
+  const { width, height } = useWindowSize();
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
@@ -13,7 +16,8 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <FollowPoint width={960} height={500}/>
+        {/* <FollowPoint width={width} height={height}/> */}
+        <SimpleSvg width={width} height={height}/>
         
         <h1 className="text-6xl font-bold">
           Welcome to{" "}
@@ -86,6 +90,11 @@ const Home: NextPage = () => {
           <li>
             <Link href="/covid_multiline">
               <a>Covid MultiLines</a>
+            </Link>
+          </li>
+          <li>
+            <Link href="/organization">
+              <a>Organization Force Diagram</a>
             </Link>
           </li>
           
