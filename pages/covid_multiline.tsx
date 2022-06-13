@@ -5,6 +5,7 @@ import { timeParse } from 'd3-time-format';
 import useData from "../hooks/useDataGeneric";
 import useWindowSize from "../hooks/useWindowSize";
 import Multiline from "../components/Multiline";
+import Home from "../components/Home";
 
 const masterUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
 
@@ -51,7 +52,7 @@ function CovidLog() {
         <title>Log Scale</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <Home />
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
         <h1 className="text-2xl font-bold">Covid Log Scale</h1>
 

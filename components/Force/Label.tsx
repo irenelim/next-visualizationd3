@@ -19,12 +19,14 @@ function Label({ node }: ILabelProps) {
     <text
       ref={ref}
       className="label"
-      // fill={node.fillColor}
+      fill="#424242"
       textAnchor="middle"
       alignmentBaseline="middle"
+      fontSize={11}
       style={{ pointerEvents: 'none' }}
     >
-      {node.id}
+      {/* {node.id} */}
+      {node.data.name}
     </text>
   );
 }

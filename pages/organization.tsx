@@ -13,13 +13,13 @@ import {
   SimulationNodeDatum,
 } from "d3-force";
 import { select, selectAll } from "d3-selection";
+import { drag } from 'd3-drag';
+import { hierarchy, HierarchyLink, HierarchyNode } from 'd3-hierarchy';
 
 import useWindowSize from "../hooks/useWindowSize";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { data, Types } from "../components/Force/data";
-import Circles from "../components/Force/Circles";
-import Links from "../components/Force/Links";
-import Labels from '../components/Force/Labels';
+import { data, initialData, Types } from "../components/Force/data";
+import Home from "../components/Home";
 
 /**
  * https://vizhub.com/curran/f192e44054aa4731b5ceba1b833028d6?edit=files&file=index.js
@@ -36,7 +36,7 @@ const LEAF_NODE_SIZE = 5;
 const DEFAULT_DISTANCE = 20;
 const MAIN_NODE_DISTANCE = 90;
 const LEAF_NODE_DISTANCE = 30;
-const MANY_BODY_STRENGTH = -20;
+const MANY_BODY_STRENGTH = -400;
 
 // Generated with https://paletton.com/#uid=75x0u0kigkU8ZuBdTpdmbh6rjc7
 const colors = [
@@ -63,26 +63,44 @@ const colors = [
 //   // { source: 'Art Web', target: 'Silicon Valley Creates' }, // Art Web -> Silicon Valley Creates
 // ];
 
+interface Node {
+  name: string
+  radiusSize?: number
+  fillColor?: string
+}
+type Link = {
+  source: string
+  target: string
+}
+
+const groupColor: any = (item: { index: number, depth: number, parent: any }) => {
+  if (item.parent && item.depth > 1) {
+    return groupColor(item.parent);
+  }
+  return item.index;
+};
+
 // function organization({ data }: Props) {
 function organization() {
-  const { nodes, links } = data;
+  // const { nodes, links } = data;
+  const root = hierarchy(initialData);
+  const nodes = root.descendants();
+  const links = root.links();
+
   const { width, height } = useWindowSize();
   const ref = useRef<SVGSVGElement>(null);
-  const [simulation, setSimulation] = useState<
-  Simulation<SimulationNodeDatum, undefined> | undefined
-  >();
 
-  /*
   useEffect(() => {
     if (ref.current) {
       const simulation = forceSimulation(nodes as SimulationNodeDatum[])
         // .force("center", forceCenter(width / 2, height / 2))
         .force("center", forceCenter)
-        .force("charge", forceManyBody().strength(-400))
+        .force("charge", forceManyBody().strength(MANY_BODY_STRENGTH))
         .force(
           "link",
-          forceLink(links)
-            .id((d) => (d as Types.Node).id)
+          forceLink(links as any[])
+            // .id((d) => (d as Types.Node).id)
+            .id((d) => (d as any).data.name)
             .distance((link) => 30)
         )
         .force("x", forceX())
@@ -92,24 +110,53 @@ function organization() {
       // centering workaround
       svg.attr("viewBox", [-width / 2, -height / 2, width, height]);
 
-      // const lines = svg
-      //   .selectAll("line")
-      //   .data(links)
-      //   .enter()
-      //   .append("line")
-      //   .attr(
-      //     "stroke",
-      //     (link) => (link as unknown as { color: string })?.color || "#bcbcbc"
-      //   );
-      // .attr('stroke', 'black');
+      const dragInteraction = drag<SVGCircleElement, any>()
+        // .on('start', (event, node: any) => {
+        //   // node.fx = event.x;
+        //   // node.fy = event.y;
+        //   if (!event.active && simulation) {
+        //     simulation.alpha(1).restart();
+        //   }
+        // })
+        .on('drag', (event, node: any) => {
+          node.fx = event.x;
+          node.fy = event.y;
+          if (simulation) {
+            simulation.alpha(1);
+            simulation.restart();
+          }
+        })
+        // .on('end', (event, node: any) => {          
+        //   if (!event.active) {
+        //     simulation.alphaTarget(0);
+        //   }
+        //   node.fx = null;
+        //   node.fy = null;
+        // });
 
-      // const circles = svg
-      //   .selectAll("circle")
-      //   .data(nodes)
-      //   .enter()
-      //   .append("circle")
-      //   .attr("fill", (node) => node.fillColor || "gray")
-      //   .attr("r", (node) => node.radiusSize || 10);
+      const lines = svg
+        .selectAll("line")
+        .data(links)
+        .enter()
+        .append("line")
+        .attr(
+          "stroke",
+          (link) => (link as unknown as { color: string })?.color || "#bcbcbc"
+        );
+
+      const circles = svg
+        .selectAll("circle")
+        .data(nodes)
+        .enter()
+        .append("circle")
+        .attr("fill", (node) => {
+          if (node.depth >= 1){
+            return colors[groupColor(node) - 1][1];
+          }
+          return "gray";
+        })
+        .attr("r", (node) => (node.depth === 0) ? 0 : (node.depth === 1) ? 30 : 10);
+        
 
       const text = svg
         .selectAll("text")
@@ -118,95 +165,100 @@ function organization() {
         .append("text")
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "middle")
+        .attr('font-size', 11)
         .style("pointer-events", "none")
-        .text((node) => node.id);
+        .text((node) => node.data.name);
 
       simulation.on("tick", () => {
-        // circles.attr("cx", (node) => node.x).attr("cy", (node) => node.y);
+        circles
+          .attr("cx", (node) => (node as unknown as Types.point).x)
+          .attr("cy", (node) => (node as unknown as Types.point).y);
         text
           .attr("x", (node) => (node as unknown as Types.point).x)
           .attr("y", (node) => (node as unknown as Types.point).y);
 
-        // lines
-        //   .attr(
-        //     "x1",
-        //     (link) => (link as unknown as { source: Types.point }).source.x
-        //   )
-        //   .attr(
-        //     "y1",
-        //     (link) => (link as unknown as { source: Types.point }).source.y
-        //   )
-        //   .attr(
-        //     "x2",
-        //     (link) => (link as unknown as { target: Types.point }).target.x
-        //   )
-        //   .attr(
-        //     "y2",
-        //     (link) => (link as unknown as { target: Types.point }).target.y
-        //   );
-
+        lines
+          .attr(
+            "x1",
+            (link) => (link as unknown as { source: Types.point }).source.x
+          )
+          .attr(
+            "y1",
+            (link) => (link as unknown as { source: Types.point }).source.y
+          )
+          .attr(
+            "x2",
+            (link) => (link as unknown as { target: Types.point }).target.x
+          )
+          .attr(
+            "y2",
+            (link) => (link as unknown as { target: Types.point }).target.y
+          );
       });
+
+      circles.call(dragInteraction);
     }
+
   }, [ref, nodes, links, width, height]);
-  */
-  const simulatePositions = useCallback(() => {
-    const simu = forceSimulation(nodes as SimulationNodeDatum[])
-      .force("center", forceCenter(width / 2, height / 2))
-      .force("charge", forceManyBody().strength(-400))
-      .force(
-        "link",
-        forceLink(links)
-          .id((d) => (d as Types.Node).id)
-          .distance((link) => 30)
-          // .strength(0.5)
-      )
-      .force("x", forceX())
-      .force("y", forceY());
-    setSimulation(simu);
-  }, [nodes, width, height]);
 
-  const drawTicks = useCallback(() => {
-    const circles = selectAll(".node");
-    const lines = selectAll(".link");
-    const labels = selectAll(".label");
+  // const simulatePositions = useCallback(() => {
+  //   const simu = forceSimulation(nodes as SimulationNodeDatum[])
+  //     .force("center", forceCenter(width / 2, height / 2))
+  //     .force("charge", forceManyBody().strength(-400))
+  //     .force(
+  //       "link",
+  //       forceLink(links)
+  //         .id((d) => (d as Types.Node).id)
+  //         .distance((link) => 30)
+  //         // .strength(0.5)
+  //     )
+  //     .force("x", forceX())
+  //     .force("y", forceY());
+  //   setSimulation(simu);
+  // }, [nodes, width, height]);
 
-    function onTickHandler() {
-      circles
-        .attr("cx", (node) => (node as Types.point).x)
-        .attr("cy", (node) => (node as Types.point).y);
+  // const drawTicks = useCallback(() => {
+  //   const circles = selectAll(".node");
+  //   const lines = selectAll(".link");
+  //   const labels = selectAll(".label");
 
-      lines
-        .attr("x1", (link) => (link as { source: Types.point }).source.x)
-        .attr("y1", (link) => (link as { source: Types.point }).source.y)
-        .attr("x2", (link) => (link as { target: Types.point }).target.x)
-        .attr("y2", (link) => (link as { target: Types.point }).target.y);
-    
-      labels
-        .attr('x', (d) => {
-          return (d as Types.point).x + 5
-        })
-        .attr('y', (d) => {
-          return (d as Types.point).y + 5
-        })
-      }
+  //   function onTickHandler() {
+  //     circles
+  //       .attr("cx", (node) => (node as Types.point).x)
+  //       .attr("cy", (node) => (node as Types.point).y);
 
-    if (simulation) simulation.on('tick', onTickHandler)
-    
-  }, [simulation]);
+  //     lines
+  //       .attr("x1", (link) => (link as { source: Types.point }).source.x)
+  //       .attr("y1", (link) => (link as { source: Types.point }).source.y)
+  //       .attr("x2", (link) => (link as { target: Types.point }).target.x)
+  //       .attr("y2", (link) => (link as { target: Types.point }).target.y);
 
-  useEffect(() => {
-    simulatePositions();
-  }, [nodes, links, width, height]);
-  
-  if (simulation) drawTicks(); 
+  //     labels
+  //       .attr('x', (d) => {
+  //         return (d as Types.point).x + 5
+  //       })
+  //       .attr('y', (d) => {
+  //         return (d as Types.point).y + 5
+  //       })
+  //     }
 
-  const restartDrag = () => {
-    if (simulation) simulation.alphaTarget(0.2).restart();
-  }
+  //   if (simulation) simulation.on('tick', onTickHandler)
 
-  const stopDrag = () => {
-    if (simulation) simulation.alphaTarget(0);
-  }
+  // }, [simulation]);
+
+  // useEffect(() => {
+  //   simulatePositions();
+  // }, [nodes, links, width, height]);
+
+  // if (simulation) drawTicks();
+
+  // const restartDrag = () => {
+  //   if (simulation) simulation.alphaTarget(0.2).restart();
+  // }
+
+  // const stopDrag = () => {
+  //   if (simulation) simulation.alphaTarget(0);
+  // }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -214,38 +266,20 @@ function organization() {
         <title>Force Simulation</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <Home />
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
         <h1 className="text-2xl font-bold">Organization Diagram</h1>
+        <p>* drag interaction issue</p>
 
-        {/* <svg ref={ref} width={width} height={height} /> */}
-        <svg width={width} height={height}>
-          {/* <Circles nodes={nodes} simulation={simulation} /> */}
+        <svg ref={ref} width={width} height={height} />
+        {/* <svg width={width} height={height}>
           <Links links={links} />
           <Circles nodes={nodes} restartDrag={restartDrag} stopDrag={stopDrag} />
           <Labels nodes={nodes} />
-        </svg>
+        </svg> */}
       </main>
     </div>
   );
 }
-
-// export async function getStaticProps() {
-// const csvUrl = 'https://gist.githubusercontent.com/thomasnield/03cf7c08016b514086ac8a9fdc07cc65/raw/iris.csv';
-// const row = (d: any) => {
-//   d.sepal_length = +d.sepal_length;
-//   d.sepal_width = +d.sepal_width;
-//   d.petal_length = +d.petal_length;
-//   d.sepal_width = +d.sepal_width;
-//   return d;
-// };
-// const data = await csv(csvUrl, row);
-
-// return {
-//     props: {
-//         data
-//     }
-// }
-// }
 
 export default organization;

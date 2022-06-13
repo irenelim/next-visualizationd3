@@ -17,6 +17,7 @@ function Circles({ nodes, restartDrag, stopDrag }: ICirclesProps) {
       selectAll('.node')
         // @ts-ignore
         .call(drag<SVGCircleElement, Types.datum>().on('start', onDragStart).on('drag', onDrag).on('end', onDragEnd))
+        // .call(drag<SVGCircleElement, Types.datum>().on('drag', onDrag))
   
       // @ts-ignore
       function onDragStart(event: D3DragEvent<SVGCircleElement>, d: Types.datum) {
@@ -41,9 +42,9 @@ function Circles({ nodes, restartDrag, stopDrag }: ICirclesProps) {
           stopDrag()
         }
         // eslint-disable-next-line no-param-reassign
-        d.fx = null
+        // d.fx = null // commented so that the position of the node stayed as dragged x, y
         // eslint-disable-next-line no-param-reassign
-        d.fy = null
+        // d.fy = null
       }
     };
 
@@ -53,7 +54,8 @@ function Circles({ nodes, restartDrag, stopDrag }: ICirclesProps) {
   return (
     <g className="nodes">
       {nodes.map((node, i) => (
-          <Circle key={node.id} node={node} />
+          // <Circle key={node.id} node={node} />
+          <Circle key={i} node={node} />
       ))}
     </g>
   );

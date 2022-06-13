@@ -11,10 +11,12 @@ interface ILabelsProps {
 }
 
 function Labels({ nodes }: ILabelsProps) {
+
   return (
     <g className="labels">
       {nodes.map((node, i) => (
-          <Label key={node.id} node={node} />
+          // <Label key={node.id} node={node} />
+          <Label key={i} node={node} />
       ))}
     </g>
   );

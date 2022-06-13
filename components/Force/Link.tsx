@@ -35,11 +35,13 @@ function Link({ link }: ILinkProps) {
         ref={ref}
         className="link"
         stroke="#cfcccc"
-        strokeWidth={3}
+        // strokeWidth={3}
         strokeOpacity={1}
-        onMouseEnter={onHoverIn}
-        onMouseOut={onHoverOut}
-      />
+        // onMouseEnter={onHoverIn}
+        // onMouseOut={onHoverOut}
+      >
+        {/* <title>{link?.source}</title> */}
+      </line>
     </g>
   );
 }

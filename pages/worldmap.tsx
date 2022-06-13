@@ -8,6 +8,7 @@ import useCities, { City } from "../hooks/useCities";
 import { useEffect, useState } from "react";
 import { Feature, MultiLineString, Point, GeoJsonProperties } from "geojson";
 import useWindowSize from "../hooks/useWindowSize";
+import Home from "../components/Home";
 interface Props {
   // data: Topology;
   land: Feature<Point, GeoJsonProperties>;
@@ -48,7 +49,7 @@ function WorldMap() {
         <title>World Map</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <Home />
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
         <h1 className="text-2xl font-bold">World Map</h1>
         {worldAtlas && (

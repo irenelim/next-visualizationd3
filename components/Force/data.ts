@@ -1,3 +1,45 @@
+export const initialData = {
+  name: "organization",
+  children: [
+    {
+      name: "Art Web",
+      children: [
+        { name: "Community Vision" },
+        { name: "Silicon Valley Creates" },
+      ],
+    },
+    {
+      name: "Social Impact Commons",
+      children: [
+        { name: "Theatre Bay Area" },
+        { name: "EastSide Arts Alliance" },
+        { name: "Local Color" },
+      ],
+    },
+    {
+      name: "Community Arts Stabilization Trust",
+      children: [
+        { name: "CounterPulse" },
+        { name: "Luggage Store Gallery" },
+        { name: "Performing Arts Workshop" },
+        { name: "447 Minna St." },
+        { name: "Keeping Space Oakland" },
+      ],
+    },
+    {
+      name: "AmbitioUS",
+      children: [
+        { name: "EBPREC" },
+        { name: "SELC" },
+        { name: "The Runway Project" },
+        { name: "Common Future" },
+        { name: "Freelancers Union" },
+        { name: "US Federation of Worker Cooperatives" },
+      ],
+    },
+  ],
+};
+
 export const data = {
   nodes: [
     { id: "Microsoft", radiusSize: 40, fillColor: '#E6A6B0' },
@@ -55,15 +97,21 @@ export const data = {
 
 export namespace Types {
     export type Node = {
-      id: string
+      // id: string
+      name: string;
     //   group: number
-      radiusSize: number
-      fillColor: string
+      radiusSize?: number;
+      fillColor?: string;
+      depth?: number;
+      index?: number;
+      parent?: any;
+      data?: any;
+
     }
     export type Link = {
-      source: string
-      target: string
-      type: string
+      source: any
+      target: any
+      type?: string
     }
     export type DataObject = {
       nodes: Node[]

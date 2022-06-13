@@ -93,8 +93,13 @@ const Home: NextPage = () => {
             </Link>
           </li>
           <li>
+            <Link href="/state_force">
+              <a>Force - useState</a>
+            </Link>
+          </li>
+          <li>
             <Link href="/organization">
-              <a>Organization Force Diagram</a>
+              <a>Organization Force Diagram - useRef</a>
             </Link>
           </li>
           

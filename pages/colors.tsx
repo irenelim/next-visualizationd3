@@ -2,6 +2,7 @@ import Head from "next/head";
 import { csvParse } from 'd3-dsv';
 import { CSSColors } from "../typings";
 import ColorPie from "../components/ColorPie";
+import Home from "../components/Home";
 
 interface Props {
     cssColors: CSSColors[];
@@ -15,7 +16,7 @@ function colors({ cssColors }: Props) {
         <title>CSS Named Colors</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <Home />
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
         <h1 className="text-2xl font-bold">
           CSS Named Colors
