@@ -12,6 +12,7 @@ import BubbleMap from "../components/WorldAtlas/BubbleMap";
 import DateHistogram from "../components/AggregationChart/DateHistogram";
 import useWindowSize from "../hooks/useWindowSize";
 import Home from "../components/Home";
+import useData from "../hooks/useData2";
 interface WorldAtlas {
   // data: Topology;
   land: Feature<Point, GeoJsonProperties>;
@@ -22,6 +23,8 @@ interface Props {
   data: DSVRowArray;
 }
 
+const csvUrl =
+"https://gist.githubusercontent.com/curran/a9656d711a8ad31d812b8f9963ac441c/raw/MissingMigrants-Global-2019-10-08T09-47-14-subset.csv";
 const jsonUrl = "https://unpkg.com/world-atlas@2.0.2/countries-50m.json";
 // const width = 960;
 // const height = 500;
@@ -30,8 +33,10 @@ const dateHistogramSize = 0.2; // 20%
 
 const xValue = (d: any) => new Date(d['Reported Date']);
 
-function multiple({ data }: Props) {
+// function multiple({ data }: Props) {
+function multiple() {
   const { width, height } = useWindowSize();
+  const data: (DSVRowArray | null) = useData(csvUrl) as DSVRowArray;
   const { data: world } = useFetch<Topology>(jsonUrl);
   // const cities: City[] | null = useCities();
   const [worldAtlas, setWorldAtlas] = useState<WorldAtlas | null>(null);
@@ -111,25 +116,25 @@ function multiple({ data }: Props) {
   );
 }
 
-export async function getStaticProps() {
-  const csvUrl =
-    "https://gist.githubusercontent.com/curran/a9656d711a8ad31d812b8f9963ac441c/raw/MissingMigrants-Global-2019-10-08T09-47-14-subset.csv";
-  const row = (d: any) => {
-    d["Total Dead and Missing"] = +d["Total Dead and Missing"];
-    // d["Reported Date"] = new Date(d["Reported Date"]);
-    d.coords = d["Location Coordinates"]
-      .split(",")
-      .map((d: string) => +d)
-      .reverse();
-    return d;
-  };
-  const data = await csv(csvUrl, row);
+// export async function getStaticProps() {
+//   const csvUrl =
+//     "https://gist.githubusercontent.com/curran/a9656d711a8ad31d812b8f9963ac441c/raw/MissingMigrants-Global-2019-10-08T09-47-14-subset.csv";
+//   const row = (d: any) => {
+//     d["Total Dead and Missing"] = +d["Total Dead and Missing"];
+//     // d["Reported Date"] = new Date(d["Reported Date"]);
+//     d.coords = d["Location Coordinates"]
+//       .split(",")
+//       .map((d: string) => +d)
+//       .reverse();
+//     return d;
+//   };
+//   const data = await csv(csvUrl, row);
 
-  return {
-    props: {
-      data,
-    },
-  };
-}
+//   return {
+//     props: {
+//       data,
+//     },
+//   };
+// }
 
 export default multiple;
