@@ -12,8 +12,9 @@ function SimpleSvg({ width, height }: SVGContainer) {
     };
 
   return (
+    // <svg className="svg" width={width} height={height} viewBox="0 0 500 200">
     // viewBox - SVG responsive need
-    <svg className="svg" width={width} height={height} viewBox="0 0 500 200">
+    <svg className="svg" viewBox="0 0 500 200">
         <text x={500 / 2} y={200 / 2} textAnchor="middle" alignmentBaseline="hanging">Ain't no mountain High</text>
     </svg>
   )

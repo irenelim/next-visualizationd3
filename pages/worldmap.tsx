@@ -60,6 +60,7 @@ function WorldMap() {
             cities={cities}
             sizeAttribute="population"
             coords={(d: City) => [d.lng, d.lat]}
+            dimension={{ width, height }}
           />
         )}
       </main>

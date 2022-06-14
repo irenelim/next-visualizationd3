@@ -53,7 +53,8 @@ function LineChart({
     .nice();
 
   return (
-    <svg className="svg" width={width} height={height}>
+    // <svg className="svg" width={width} height={height}>
+    <svg className="svg" viewBox={`0 0 ${width} ${height}`}>
       <g transform={`translate(${margin.left},${margin.top})`}>
         {/* tick lines */}
         <AxisBottom

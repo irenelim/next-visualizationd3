@@ -77,6 +77,7 @@ function multiple({ data }: Props) {
               filteredData={filteredData}
               sizeAttribute="Total Dead and Missing"
               coords={(d: any) => d.coords}
+              dimension={{ width, height }}
             />
             <g transform={`translate(0,${height - dateHistogramSize * height})`}>
               <DateHistogram

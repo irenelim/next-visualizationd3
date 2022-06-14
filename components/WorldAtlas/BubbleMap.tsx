@@ -10,6 +10,7 @@ interface Props {
   filteredData: City[] | unknown[];
   sizeAttribute: string;
   coords: any;
+  dimension: any;
 }
 
 // const margin = { top: 20, right: 30, bottom: 65, left: 90 };
@@ -24,6 +25,7 @@ function BubbleMap({
   filteredData,
   sizeAttribute,
   coords,
+  dimension
 }: Props) {
 
   // const sizeValue = (d: any) => d[sizeAttribute];
@@ -49,6 +51,7 @@ function BubbleMap({
       sizeScale={sizeScale}
       sizeValue={sizeValue}
       coords={coords}
+      dimension={dimension}
     />
   );
 }

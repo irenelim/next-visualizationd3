@@ -9,15 +9,16 @@ import BubbleMap from "./BubbleMap";
 interface Props extends SVGContainer {
   worldAtlas: any;
   cities: City[] | unknown[];
-  sizeAttribute: string
+  sizeAttribute: string;
   coords: any;
+  dimension: any;
 }
 
 // const margin = { top: 20, right: 30, bottom: 65, left: 90 };
 // const xAxisLabelOffset = 55;
 // const yAxisLabelOffset = 45;
 
-function Map({ width, height, worldAtlas, cities, sizeAttribute, coords }: Props) {
+function Map({ width, height, worldAtlas, cities, sizeAttribute, coords, dimension }: Props) {
   // const innerHeight = height - margin.top - margin.bottom;
   // const innerWidth = width - margin.left - margin.right;
 
@@ -34,7 +35,8 @@ function Map({ width, height, worldAtlas, cities, sizeAttribute, coords }: Props
 
 
   return (
-    <svg className={"svg"} width={width} height={height}>
+    // <svg className={"svg"} width={width} height={height}>
+    <svg className="svg" viewBox={`0 0 ${width} ${height}`}>
       <BubbleMap
         worldAtlas={worldAtlas}
         // cities={cities}
@@ -42,6 +44,7 @@ function Map({ width, height, worldAtlas, cities, sizeAttribute, coords }: Props
         filteredData={cities}
         sizeAttribute={sizeAttribute}
         coords={coords}
+        dimension={dimension}
       />
     </svg>
   );

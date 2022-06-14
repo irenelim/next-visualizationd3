@@ -20,11 +20,13 @@ interface Props {
   sizeValue: (d: City) => number;
   styles: { [key: string]: string };
   coords: (d: any) => [number, number];
+  dimension: {
+    width: number;
+    height: number;
+  }
 }
 
-const projection = geoNaturalEarth1();
-const path = geoPath(projection);
-const graticule = geoGraticule();
+
 
 export const Marks = ({
   worldAtlas: { land, interiors },
@@ -33,8 +35,15 @@ export const Marks = ({
   sizeValue,
   styles,
   coords,
+  dimension
 }: Props) => {
+
+  const projection = geoNaturalEarth1().fitSize([dimension.width, dimension.height], land as any);
+const path = geoPath(projection);
+const graticule = geoGraticule();
+
   return (
+    // 
     <g className={styles.marks}>
       {useMemo(() => {
         const spherePath = path({ type: "Sphere" } as GeoPermissibleObjects);
