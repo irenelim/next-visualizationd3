@@ -2,7 +2,7 @@ import React from "react";
 import { scaleTime, scaleLinear } from "d3-scale";
 import { extent, min, max } from "d3-array";
 import { timeFormat } from "d3-time-format";
-import { SVGContainer } from "../../typings";
+import { Data, DataArray, Range, SVGContainer } from "../../typings";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
@@ -12,7 +12,7 @@ const xAxisLabelOffset = 55;
 const yAxisLabelOffset = 45;
 
 interface Props extends SVGContainer {
-  data: any[];
+  data: DataArray;
   xAttribute: string;
   yAttribute: string;
   xAxisLabel: string;
@@ -33,22 +33,22 @@ function LineChart({
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
 
-  const xValue = (d: any) => new Date(d[xAttribute]);
+  const xValue = (d: Data) => new Date(d[xAttribute]);
   // const xAxisLabel = "Time";
 
-  const yValue = (d: any) => d[yAttribute];
+  const yValue = (d: Data) => d[yAttribute] as number;
   // const yAxisLabel = "Temperature";
 
   const xAxisTickFormat = timeFormat(xTimeFormat);
 
   const xScale = scaleTime()
   // .domain([min(data, xValue), max(data, xValue)] as [Date, Date])
-    .domain(extent(data, xValue) as [Date, Date])
+    .domain(extent(data, xValue) as Range<Date>)
     .range([0, innerWidth])
     .nice();
 
   const yScale = scaleLinear()
-    .domain(extent(data, yValue) as [number, number])
+    .domain(extent(data, yValue) as Range<number>)
     .range([innerHeight, 0])
     .nice();
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { scaleLinear, scaleOrdinal } from "d3-scale";
 import { extent } from "d3-array";
 import { format } from "d3-format";
-import { SVGContainer } from "../../typings";
+import { Data, DataArray, Range, SVGContainer } from "../../typings";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
@@ -14,7 +14,7 @@ const yAxisLabelOffset = 45;
 const fadeOpacity = 0.2;
 
 interface Props extends SVGContainer {
-  data: any[];
+  data: DataArray;
   xAttribute?: string;
   yAttribute?: string;
   xAxisLabel?: string;
@@ -36,13 +36,13 @@ function PlotChart({
   const innerWidth = width - margin.left - margin.right;
 
   // const xAttribute = 'petal_length';
-  const xValue = (d: any) => d[xAttribute];
+  const xValue = (d: Data) => d[xAttribute] as number;
   // const xAxisLabel = "Petal Length";
 
-  const yValue = (d: any) => d[yAttribute];
+  const yValue = (d: Data) => d[yAttribute] as number;
   // const yAxisLabel = "Sepal Width";
 
-  const colorValue = (d: any) => d.species;
+  const colorValue = (d: Data) => d.species as string;
   const colorLegendLabel = 'Species';
 
   const filteredData = data.filter(d => hoveredValue === colorValue(d));
@@ -54,20 +54,20 @@ function PlotChart({
     siFormat(tickValue).replace("G", "B");
 
   const xScale = scaleLinear()
-    .domain(extent(data, xValue) as [number, number])
+    .domain(extent(data, xValue) as Range<number>)
     .range([0, innerWidth])
     .nice();
 
   const yScale = scaleLinear()
-    .domain(extent(data, yValue) as [number, number])
+    .domain(extent(data, yValue) as Range<number>)
     .range([0, innerHeight]);
 
-  const colorScale = scaleOrdinal()
+  const colorScale = scaleOrdinal<string>()
     .domain(data.map(colorValue))
     .range(["#e6842a", "#137b80", "#8e6c8a"]);
 
   return (
-    <svg className="svg" width={width} height={height}>
+    <svg className="svg" viewBox={`0 0 ${width} ${height}`}>
       <g transform={`translate(${margin.left},${margin.top})`}>
         {/* tick lines */}
         <AxisBottom

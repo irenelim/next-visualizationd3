@@ -5,28 +5,24 @@ import {
   GeoPermissibleObjects,
   geoGraticule,
 } from "d3-geo";
-import { City } from "../../hooks/useCities";
 import { ScalePower } from "d3";
 import { useMemo } from "react";
+import { City, Coords, Dimension, WorldAtlas } from "../../typings";
 
 interface Props {
-  worldAtlas: {
-    // countries: FeatureCollection;
-    land: FeatureCollection;
-    interiors: MultiLineString;
-  };
-  data: City[] | unknown[];
+  // worldAtlas: {
+  //   // countries: FeatureCollection;
+  //   land: FeatureCollection;
+  //   interiors: MultiLineString;
+  // };
+  worldAtlas: WorldAtlas;
+  data: City[];
   sizeScale: ScalePower<number, number, never>;
   sizeValue: (d: City) => number;
   styles: { [key: string]: string };
-  coords: (d: any) => [number, number];
-  dimension: {
-    width: number;
-    height: number;
-  }
+  coords: Coords;
+  dimension: Dimension;
 }
-
-
 
 export const Marks = ({
   worldAtlas: { land, interiors },
@@ -35,15 +31,17 @@ export const Marks = ({
   sizeValue,
   styles,
   coords,
-  dimension
+  dimension,
 }: Props) => {
-
-  const projection = geoNaturalEarth1().fitSize([dimension.width, dimension.height], land as any);
-const path = geoPath(projection);
-const graticule = geoGraticule();
+  const projection = geoNaturalEarth1().fitSize(
+    [dimension.width, dimension.height],
+    land
+  );
+  const path = geoPath(projection);
+  const graticule = geoGraticule();
 
   return (
-    // 
+    //
     <g className={styles.marks}>
       {useMemo(() => {
         const spherePath = path({ type: "Sphere" } as GeoPermissibleObjects);
@@ -67,13 +65,13 @@ const graticule = geoGraticule();
         );
       }, [path, graticule, land, interiors])}
       {data.map((d, i) => {
-        const [x, y] = projection(coords(d)) as [number, number];
+        const [x, y] = projection(coords(d))!;
         return (
           <circle
             key={`city-${i}`}
             cx={x}
             cy={y}
-            r={sizeScale(sizeValue(d as any))}
+            r={sizeScale(sizeValue(d))}
             className={styles.spot}
           />
         );

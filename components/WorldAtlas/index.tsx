@@ -1,17 +1,16 @@
 import React from "react";
-import { SVGContainer } from "../../typings";
+import { City, Coords, Dimension, SVGContainer, WorldAtlas } from "../../typings";
 import { Marks } from "./Marks";
-import styles from'./WorldAtlas.module.css';
-import { City } from "../../hooks/useCities";
 import { max, scaleSqrt } from "d3";
 import BubbleMap from "./BubbleMap";
+// import styles from'./WorldAtlas.module.css';
 
 interface Props extends SVGContainer {
-  worldAtlas: any;
-  cities: City[] | unknown[];
-  sizeAttribute: string;
-  coords: any;
-  dimension: any;
+  worldAtlas: WorldAtlas;
+  cities: City[];
+  sizeAttribute: keyof City;
+  coords: Coords;
+  dimension: Dimension;
 }
 
 // const margin = { top: 20, right: 30, bottom: 65, left: 90 };

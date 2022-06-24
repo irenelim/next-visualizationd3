@@ -1,7 +1,7 @@
 import { ScaleOrdinal } from "d3-scale";
 
 interface Props {
-  colorScale: ScaleOrdinal<string, unknown, never>;
+  colorScale: ScaleOrdinal<string, string, never>;
   tickSpacing?: number;
   tickSize?: number;
   tickTextOffset?: number;
@@ -30,7 +30,7 @@ function ColorLegend({
           onMouseOut={() => onHover(null)}
           opacity={hoveredValue && domainVal !== hoveredValue ? fadeOpacity : 1}
         >
-          <circle fill={colorScale(domainVal) as string} r={tickSize} />
+          <circle fill={colorScale(domainVal)} r={tickSize} />
           <text x={tickTextOffset} dy=".32em">
             {domainVal}
           </text>

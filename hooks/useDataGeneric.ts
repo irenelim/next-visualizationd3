@@ -11,7 +11,7 @@ import { DSVRowArray } from "d3-dsv";
 // };
 
 function useData(dataUrl: string) {
-  const [data, setData] = useState<unknown | null>(null);
+  const [data, setData] = useState<DSVRowArray<string> | null>(null);
 
   useEffect(() => {
     // csv(dataUrl, row).then(setData);

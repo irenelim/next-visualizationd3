@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useState } from "react";
 import { csv } from "d3-fetch";
-import { DSVRowArray } from "d3-dsv";
+import { DSVRowString } from "d3-dsv";
 import PlotChart from "../components/ScatterPlot";
 // import NativeSelect from "../components/Select/NativeSelect";
 
@@ -9,9 +9,18 @@ import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import useWindowSize from "../hooks/useWindowSize";
 import Home from "../components/Home";
+import { DataArray, ParsedRow } from "../typings";
 
 interface Props {
-  data: DSVRowArray;
+  data: DataArray;
+}
+
+interface Columns {
+  sepal_length: string;
+  sepal_width: string;
+  petal_length: string;
+  petal_width: string;
+  species: string;
 }
 
 const getLabel = (value: string) =>
@@ -94,12 +103,13 @@ function plot_menu({ data }: Props) {
 export async function getStaticProps() {
   const csvUrl =
     "https://gist.githubusercontent.com/thomasnield/03cf7c08016b514086ac8a9fdc07cc65/raw/iris.csv";
-  const row = (d: any) => {
-    d.sepal_length = +d.sepal_length;
-    d.sepal_width = +d.sepal_width;
-    d.petal_length = +d.petal_length;
-    d.sepal_width = +d.sepal_width;
-    return d;
+    const row = (d: DSVRowString<keyof Columns>) => {
+      const dd: ParsedRow = { species: d.species};
+      dd.sepal_length = +d.sepal_length!;
+      dd.sepal_width = +d.sepal_width!;
+      dd.petal_length = +d.petal_length!;
+      dd.petal_width = +d.petal_width!;
+      return dd;
   };
   const data = await csv(csvUrl, row);
 

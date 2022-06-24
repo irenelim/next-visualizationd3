@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { csv } from "d3-fetch";
 import { DSVRowArray } from "d3-dsv";
 import { Topology } from "topojson-specification";
 import { feature, mesh } from "topojson-client";
@@ -13,14 +12,12 @@ import DateHistogram from "../components/AggregationChart/DateHistogram";
 import useWindowSize from "../hooks/useWindowSize";
 import Home from "../components/Home";
 import useData from "../hooks/useData2";
+import { Data } from "../typings";
 interface WorldAtlas {
   // data: Topology;
   land: Feature<Point, GeoJsonProperties>;
   // land: FeatureCollection;
   interiors: MultiLineString;
-}
-interface Props {
-  data: DSVRowArray;
 }
 
 const csvUrl =
@@ -31,12 +28,11 @@ const jsonUrl = "https://unpkg.com/world-atlas@2.0.2/countries-50m.json";
 
 const dateHistogramSize = 0.2; // 20%
 
-const xValue = (d: any) => new Date(d['Reported Date']);
+const xValue = (d: Data) => new Date(d['Reported Date']);
 
-// function multiple({ data }: Props) {
 function multiple() {
   const { width, height } = useWindowSize();
-  const data: (DSVRowArray | null) = useData(csvUrl) as DSVRowArray;
+  const data = useData(csvUrl) as Data;
   const { data: world } = useFetch<Topology>(jsonUrl);
   // const cities: City[] | null = useCities();
   const [worldAtlas, setWorldAtlas] = useState<WorldAtlas | null>(null);

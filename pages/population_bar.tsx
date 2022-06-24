@@ -1,12 +1,18 @@
 import Head from "next/head";
 import { csv } from "d3-fetch";
-import { DSVRowArray } from "d3-dsv";
+import { DSVRowString } from "d3-dsv";
 import BarChart from "../components/BarChart";
 import useWindowSize from "../hooks/useWindowSize";
 import Home from "../components/Home";
+import { DataArray, ParsedRow } from "../typings";
 
 interface Props {
-  data: DSVRowArray;
+  data: DataArray;
+}
+
+interface Columns {
+  ['2020']: string;
+  Country: string;
 }
 
 function bars({ data }: Props) {
@@ -30,9 +36,10 @@ function bars({ data }: Props) {
 export async function getStaticProps() {
   const csvUrl =
     "https://gist.githubusercontent.com/irenelim/de28f475a879183d3c733a76cf86688a/raw/un_population_2019.csv";
-  const row = (d: any) => {
-    d.Population = +d["2020"] * 1000; // data represented in thousand
-    return d;
+  const row = (d: DSVRowString<keyof Columns>) => {
+    const dd: ParsedRow = { Country: d.Country};
+    dd.Population = +d['2020']! * 1000  ; // data represented in thousand
+    return dd;
   };
   const data = await csv(csvUrl, row);
 

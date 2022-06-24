@@ -1,7 +1,6 @@
 import React, { MouseEventHandler, useState } from "react";
-import { SVGContainer, CSSColors } from "../typings";
-import { arc, pie } from "d3-shape";
-import { DSVRowArray } from 'd3-dsv';
+import { SVGContainer, Datum, CSSColors } from "../typings";
+import { arc, pie, PieArcDatum } from "d3-shape";
 
 interface Props extends SVGContainer{
   cssColors: CSSColors[];
@@ -13,8 +12,8 @@ function ColorPie({ width, height, cssColors }: Props) {
   const initMousePos = { x: centerX, y: centerY };
   const [mousePos, setMousePos] = useState(initMousePos);
 
-  const pieArc = arc().innerRadius(0).outerRadius(width);
-  const colorPie = pie().value(1);
+  const pieArc = arc<PieArcDatum<Datum<CSSColors>>>().innerRadius(0).outerRadius(width);
+  const colorPie = pie<Datum<CSSColors>>().value(1);
 
   // const handleMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
   //     const { clientX, clientY } = event;
@@ -22,9 +21,10 @@ function ColorPie({ width, height, cssColors }: Props) {
   // };
 
   return (
-    <svg className="svg" width={width} height={height}>
+    // <svg className="svg" width={width} height={height}>
+    <svg className="svg" viewBox={`0 0 ${width} ${height}`}>
       <g transform={`translate(${centerX},${centerY})`}>
-      {colorPie(cssColors as any)
+      {colorPie(cssColors)
         .map((d) => {
           // const pp = ({
           //   startAngle: (i / cssColors.length) * 2 * Math.PI,
@@ -32,9 +32,9 @@ function ColorPie({ width, height, cssColors }: Props) {
           // });
           return(
             <path
-              key={(d.data as { [key: string]: any })["Keyword"]}
-              fill={(d.data as { [key: string]: any })["RGB hex value"]}
-              d={pieArc(d as any)!}
+              key={(d.data)["Keyword"]}
+              fill={(d.data)["RGB hex value"]}
+              d={pieArc(d)!}
             />
           );
         })}

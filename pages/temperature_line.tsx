@@ -1,12 +1,18 @@
 import Head from "next/head";
 import { csv } from "d3-fetch";
-import { DSVRowArray } from "d3-dsv";
+import { DSVRowString } from "d3-dsv";
 import LineChart from "../components/LineChart";
 import useWindowSize from "../hooks/useWindowSize";
 import Home from "../components/Home";
+import { DataArray, ParsedRow } from "../typings";
 
 interface Props {
-  data: DSVRowArray;
+  data: DataArray;
+}
+
+interface Columns {
+  timestamp: string;
+  temperature: string;
 }
 
 function lines({ data }: Props) {
@@ -39,10 +45,11 @@ function lines({ data }: Props) {
 export async function getStaticProps() {
   const csvUrl =
     "https://gist.githubusercontent.com/irenelim/4acc5f85e7da033efa4afb680cca7e47/raw/temperature.csv";
-  const row = (d: any) => {
-    d.temperature = +d.temperature;
+  const row = (d: DSVRowString<keyof Columns>) => {
+    const dd: ParsedRow = { timestamp: d.timestamp };
+    dd.temperature = +d.temperature!;
     // d.timestamp = new Date(d.timestamp);
-    return d;
+    return dd;
   };
   const data = await csv(csvUrl, row);
 

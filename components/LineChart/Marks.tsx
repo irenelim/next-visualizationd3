@@ -1,12 +1,13 @@
 import { ScaleLinear, ScaleTime } from 'd3-scale'
 import { line, curveNatural } from 'd3-shape'
+import { Data, DataArray } from '../../typings';
 
 interface Props {
     xScale: ScaleTime<number, number, never>;
     yScale: ScaleLinear<number, number, never>;
-    data: any[];
-    xValue: any;
-    yValue: any;
+    data: DataArray;
+    xValue: (d: Data) => Date;
+    yValue: (d: Data) => number;
     tooltipFormat: (n: Date) => string
     circleRadius: number
 }
@@ -15,7 +16,7 @@ export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat, cir
     <g className="marks">
         <path
          d={
-            line()
+            line<Data>()
             .x(d => xScale(xValue(d)))
             .y(d => yScale(yValue(d)))
             .curve(curveNatural)

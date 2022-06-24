@@ -1,16 +1,16 @@
 import React, { useMemo } from "react";
+import { max, scaleSqrt } from "d3";
+import { City, Coords, Data, Dimension, WorldAtlas } from "../../typings";
 import { Marks } from "./Marks";
 import styles from "./WorldAtlas.module.css";
-import { City } from "../../hooks/useCities";
-import { max, scaleSqrt } from "d3";
 
-interface Props {
-  worldAtlas: any;
-  data: City[] | unknown[];
-  filteredData: City[] | unknown[];
-  sizeAttribute: string;
-  coords: any;
-  dimension: any;
+interface Props<T> {
+  worldAtlas: WorldAtlas;
+  data: T[];
+  filteredData: T[];
+  sizeAttribute: keyof T;
+  coords: Coords;
+  dimension: Dimension;
 }
 
 // const margin = { top: 20, right: 30, bottom: 65, left: 90 };
@@ -26,7 +26,7 @@ function BubbleMap({
   sizeAttribute,
   coords,
   dimension
-}: Props) {
+}: Props<City>) {
 
   // const sizeValue = (d: any) => d[sizeAttribute];
   // const sizeScale = scaleSqrt()
@@ -34,7 +34,7 @@ function BubbleMap({
   // .range([0, maxRadius]);
 
   const sizeValue = useMemo(
-    () => (d: any) => d[sizeAttribute],
+    () => (d: City) => d[sizeAttribute] as number,
     [sizeAttribute]
   );
   const sizeScale = useMemo(() => {

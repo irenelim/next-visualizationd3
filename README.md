@@ -3,6 +3,8 @@
 Part 1: https://www.youtube.com/watch?v=2LhoCfjm8R4
 Part 2: https://www.youtube.com/watch?v=H2qPeJx1RDI
 
+[force, drag](https://github.com/d3/d3-drag) : https://observablehq.com/d/c55a5839a5bb7c73
+
 covid
 https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
 

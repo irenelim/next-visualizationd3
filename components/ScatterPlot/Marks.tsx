@@ -1,14 +1,15 @@
 import { ScaleLinear, ScaleOrdinal } from 'd3-scale'
+import { Data, DataArray } from '../../typings';
 
 interface Props {
     xScale: ScaleLinear<number, number, never>;
     yScale: ScaleLinear<number, number, never>;
-    data: any[];
-    xValue: any;
-    yValue: any;
+    data: DataArray;
+    xValue: (d: Data) => number;
+    yValue: (d: Data) => number;
     tooltipFormat: (n: number) => string;
     circleRadius: number;
-    colorScale?: ScaleOrdinal<string, unknown, never>;
+    colorScale?: ScaleOrdinal<string, string, never>;
     colorValue?: any;
 }
 
@@ -22,7 +23,7 @@ export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat, cir
                 cx={xScale(xValue(d))}
                 cy={yScale(yValue(d))}
                 r={circleRadius}
-                {...((colorScale && colorValue) ? { fill: colorScale(colorValue(d)) as string } : {} )}
+                {...((colorScale && colorValue) ? { fill: colorScale(colorValue(d)) } : {} )}
             >
                 <title>{tooltipFormat ? tooltipFormat(xValue(d)) : yValue(d)}</title>
             </circle>

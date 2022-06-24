@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { csv } from "d3-fetch";
-export interface City {
-  city: string;
-  lat: number;
-  lng: number;
-  country: string;
-  population: number;
-}
+import { DSVParsedArray, DSVRowString } from "d3-dsv";
+import { City, ParsedRow } from "../typings";
+
 
 const citiesUrl =
   "https://gist.githubusercontent.com/mmhuntsberry/7878d234cf54df81d91e31e665a034db/raw/worldcities.csv";
 
-const row = (d: any) => {
-  d.lat = +d.lat;
-  d.lng = +d.lng;
-  d.population = +d.population;
-  return d;
+const row = (d: DSVRowString<keyof City>) => {
+  const dd: City = {
+    country: d.country!,
+    city: d.city!,
+    lat: +d.lat!,
+    lng: +d.lng!,
+    population: +d.population!
+  };
+  return dd;
 };
 
 function useCities() {

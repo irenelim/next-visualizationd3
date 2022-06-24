@@ -1,27 +1,30 @@
 import { ScaleLinear, ScaleBand } from 'd3-scale'
+import { Data, DataArray } from '../../typings';
 
 interface Props {
     xScale: ScaleLinear<number, number, never>;
     yScale: ScaleBand<string>;
-    data: any[];
-    xValue: any;
-    yValue: any;
+    data: DataArray;
+    xValue: (d: Data) => number;
+    yValue: (d: Data) => string;
     tooltipFormat: (n: number) => string
 }
 
 export const Marks = ({ data, xScale, yScale, xValue, yValue, tooltipFormat }: Props) => (
     <>
-        {data.map((d) => (
-            <rect
+        {data.map((d) => {
+            const width = xScale(xValue(d));
+            return <rect
                 key={yValue(d)}
                 className="mark"
                 x={0}
-                y={yScale(yValue(d)!)}
-                width={xScale(xValue(d))}
+                y={yScale(yValue(d))}
+                width={width < 0 ? 0 : width}
                 height={yScale.bandwidth()}
             >
                 <title>{tooltipFormat(xValue(d))}</title>
             </rect>
-        ))}
+        }
+        )}
     </>
 )
