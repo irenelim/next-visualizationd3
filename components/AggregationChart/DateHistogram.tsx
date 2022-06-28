@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { scaleTime, scaleLinear } from "d3-scale";
-import { extent, bin, sum, max } from "d3-array";
+import { extent, bin, sum, max, Bin } from "d3-array";
 import { timeMonths } from "d3-time";
 import { timeFormat } from "d3-time-format";
 import { brushX } from "d3-brush";
@@ -9,27 +9,28 @@ import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import styles from "./DateHistogram.module.css";
 import { select } from "d3-selection";
+import { BinnedData, Data } from "../../typings";
 
 const margin = { top: 0, right: 30, bottom: 20, left: 60 };
 const xAxisLabelOffset = 60;
 const yAxisLabelOffset = 30;
 
-interface Props {
-  data: any[];
-  xAttribute: string;
-  yAttribute: string;
+interface Props<T> {
+  data: T[];
+  xAttribute: keyof T;
+  yAttribute: keyof T;
   xAxisLabel: string;
   yAxisLabel: string;
   xTimeFormat: string;
   height: number;
   width: number;
   setBrushExtent: (
-    extents: [Date | string | number, Date | string | number] | null
+    extents: [Date, Date] | null
   ) => void;
-  xValue: (d: any) => Date;
+  xValue: (d: T) => Date;
 }
 
-function DateHistogram({
+function DateHistogram<T extends unknown>({
   data,
   xAttribute,
   yAttribute,
@@ -40,7 +41,7 @@ function DateHistogram({
   width,
   setBrushExtent,
   xValue,
-}: Props) {
+}: Props<T>) {
   const brushRef = useRef<SVGGElement | null>(null);
 
   const innerHeight = height - margin.top - margin.bottom;
@@ -59,12 +60,12 @@ function DateHistogram({
       .nice();
   }, [data, xValue, innerWidth]);
 
-  const binnedData = useMemo(() => {
-    const xValueNum = (d: any) => new Date(d[xAttribute]).getTime();
-    const yValue = (d: any) => d[yAttribute];
+  const binnedData: BinnedData[] = useMemo(() => {
+    const xValueNum = (d: T) => new Date(d[xAttribute] as unknown as string).getTime();
+    const yValue = (d: T) => d[yAttribute] as unknown as number;
     const [start, stop] = xScale.domain();
     // console.log('compute binnedData');
-    return bin()
+    return bin<T, number>()
       .value(xValueNum)
       .domain([start.getTime(), stop.getTime()])
       .thresholds(timeMonths(start, stop).map((t) => t.getTime()))(data)
@@ -76,9 +77,9 @@ function DateHistogram({
   }, [xAttribute, yAttribute, xScale, data]);
 
   const yScale = useMemo(() => {
-    const aggYValue = (d: any) => d.y;
+    const aggYValue = (d: BinnedData) => d.y;
     return scaleLinear()
-      .domain([max(binnedData, aggYValue), 0])
+      .domain([max(binnedData, aggYValue) as number, 0])
       .range([0, innerHeight])
       .nice();
   }, [binnedData, innerHeight]);

@@ -1,39 +1,40 @@
-import { FeatureCollection, MultiLineString } from "geojson";
+import { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import {
   geoNaturalEarth1,
   geoPath,
   GeoPermissibleObjects,
   geoGraticule,
 } from "d3-geo";
-import { NumberValue, ScaleSequential } from "d3-scale";
+import { ScaleSequential } from "d3-scale";
 import { useMemo } from "react";
+import { AidsData, Dimension, WorldAtlas } from "../../typings";
 
-interface Props {
-  worldAtlas: {
-    countries: FeatureCollection;
-    // land: FeatureCollection;
-    interiors: MultiLineString;
-  };
-  rowByCountry: Map<any, any>;
+interface Props<T> {
+  worldAtlas: WorldAtlas;
+  rowByCountry: Map<string, T>;
   colorScale: ScaleSequential<string, never>;
-  colorValue: (d: any) => NumberValue;
+  colorValue: (d: T) => number;
   styles: { [key: string]: string };
+  dimension: Dimension;
 }
 
-const projection = geoNaturalEarth1();
-const path = geoPath(projection);
-const graticule = geoGraticule();
+const missingDataColor = "gray";
 
-const missingDataColor = 'gray';
-
-export const Marks = ({
+export const Marks = <T extends AidsData>({
   worldAtlas: { countries, interiors },
   rowByCountry,
   colorScale,
   colorValue,
   styles,
-}: // coords,
-Props) => {
+  dimension,
+}: Props<T>) => {
+  const projection = geoNaturalEarth1().fitSize(
+    [dimension.width, dimension.height],
+    countries as FeatureCollection<Geometry, GeoJsonProperties>
+  );
+  const path = geoPath(projection);
+  const graticule = geoGraticule();
+
   return (
     <g className={styles.marks}>
       {useMemo(() => {
@@ -45,9 +46,9 @@ Props) => {
               className={styles.graticules}
               d={path(graticule()) as string}
             />
-            {countries.features.map((feature, i) => {
+            {countries!.features.map((feature, i) => {
               const countryId = feature?.id;
-              const d = rowByCountry.get(countryId);
+              const d = rowByCountry.get(countryId as string);
               return (
                 <path
                   // className={styles.land}

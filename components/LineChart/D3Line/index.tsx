@@ -3,29 +3,26 @@ import { line } from "d3-shape";
 import { scaleTime, scaleLinear } from "d3-scale";
 import { extent, min, max } from "d3-array";
 import { timeFormat } from "d3-time-format";
-import { SVGContainer } from "../../../typings";
-import { AxisBottom } from "../AxisBottom";
-import { AxisLeft } from "../AxisLeft";
-import { Marks } from "../Marks";
+import { Range, SVGContainer } from "../../../typings";
 import styles from "./D3Line.module.css";
 import YMarkerLine from "./YMarkerLine";
 import XMarkerLine from "./XMarkerLine";
 import XAxis from "./XAxis";
 
 const margin = { top: 20, right: 50, bottom: 65, left: 100 };
-const xAxisLabelOffset = 55;
-const yAxisLabelOffset = 45;
+// const xAxisLabelOffset = 55;
+// const yAxisLabelOffset = 45;
 
-interface Props extends SVGContainer {
-  data: any[];
-  xAttribute: string;
-  yAttribute: string;
+interface Props<T> extends SVGContainer {
+  data: T[];
+  xAttribute: keyof T;
+  yAttribute: keyof T;
   xAxisLabel: string;
   yAxisLabel: string;
   xTimeFormat: string;
 }
 
-function LineChart({
+function LineChart<T>({
   width,
   height,
   data,
@@ -34,27 +31,27 @@ function LineChart({
   xAxisLabel,
   yAxisLabel,
   xTimeFormat,
-}: Props) {
+}: Props<T>) {
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
 
-  const xValue = (d: any) => d[xAttribute];
-  const yValue = (d: any) => d[yAttribute];
+  const xValue = (d: T) => d[xAttribute] as unknown as Date;
+  const yValue = (d: T) => d[yAttribute] as unknown as number;
 
   const xAxisTickFormat = timeFormat(xTimeFormat);
 
   const xScale = scaleTime()
     // .domain([min(data, xValue), max(data, xValue)] as [Date, Date])
-    .domain(extent(data, xValue) as [Date, Date])
+    .domain(extent(data, xValue) as Range<Date>)
     .range([0, innerWidth]);
     // .nice();
 
   const yScale = scaleLinear()
-    .domain(extent(data, yValue) as [number, number])
+    .domain(extent(data, yValue) as Range<number>)
     .range([innerHeight, 0]);
     // .nice();
 
-  const lineGenerator = line()
+  const lineGenerator = line<T>()
     .x((d) => xScale(xValue(d)))
     .y((d) => yScale(yValue(d)));
 

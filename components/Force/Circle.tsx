@@ -15,12 +15,7 @@ interface ICircleProps {
   node: Types.Node;
 }
 
-const groupName: any = (item: {
-  index: number;
-  depth: number;
-  data: { name: string };
-  parent: any;
-}) => {
+const groupName: Function = (item: Types.Node) => {
   if (item.parent && item.depth > 1) {
     return groupName(item.parent);
   }

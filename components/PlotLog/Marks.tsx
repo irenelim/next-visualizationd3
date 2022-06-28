@@ -1,24 +1,24 @@
 import { ScaleLinear, ScaleTime } from "d3-scale";
 
-interface Props {
+interface Props<T> {
   xScale: ScaleTime<number, number, never>;
   yScale: ScaleLinear<number, number, never>;
-  data: any[];
-  xValue: any;
-  yValue: any;
-  tooltipFormat: (n: Date) => string;
+  data: T[];
+  xValue: (d: T) => Date;
+  yValue: (d: T) => number;
+  // tooltipFormat: (n: Date) => string;
   circleRadius: number;
 }
 
-export const Marks = ({
+export const Marks = <T extends unknown>({
   data,
   xScale,
   yScale,
   xValue,
   yValue,
-  tooltipFormat,
-  circleRadius,
-}: Props) => (
+  // tooltipFormat,
+  circleRadius
+}: Props<T>) => (
   <g className="marks">
     {data.map((d, i) => {
       const y = yScale(yValue(d)); //if 0 will cause NaN to cy

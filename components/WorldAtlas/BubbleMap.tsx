@@ -9,7 +9,7 @@ interface Props<T> {
   data: T[];
   filteredData: T[];
   sizeAttribute: keyof T;
-  coords: Coords;
+  coords: Coords<T>;
   dimension: Dimension;
 }
 
@@ -19,14 +19,14 @@ interface Props<T> {
 
 const maxRadius = 15;
 
-function BubbleMap({
+function BubbleMap<T extends unknown>({
   worldAtlas,
   data,
   filteredData,
   sizeAttribute,
   coords,
   dimension
-}: Props<City>) {
+}: Props<T>) {
 
   // const sizeValue = (d: any) => d[sizeAttribute];
   // const sizeScale = scaleSqrt()
@@ -34,7 +34,7 @@ function BubbleMap({
   // .range([0, maxRadius]);
 
   const sizeValue = useMemo(
-    () => (d: City) => d[sizeAttribute] as number,
+    () => (d: T) => d[sizeAttribute] as unknown as number,
     [sizeAttribute]
   );
   const sizeScale = useMemo(() => {

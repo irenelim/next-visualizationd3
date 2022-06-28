@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { csv } from "d3-fetch";
-import { DSVRowArray } from "d3-dsv";
+import { DSVRowString } from "d3";
+import { AidsData, ParsedRow } from "../typings";
 
 const dataUrl =
   "https://gist.githubusercontent.com/curran/470752f12c027f8ff4266e7c96f26a56/raw/share-of-population-infected-with-hiv-ihme.csv";
 
-const row = (d: any) => {
-  d.aids = +d['Prevalence - HIV/AIDS - Sex: Both - Age: 15-49 years (Percent) (%)'];
-  return d;
+const row = (d: DSVRowString<keyof AidsData>) => {
+  const dd: ParsedRow = d;
+  dd.aids = +d['Prevalence - HIV/AIDS - Sex: Both - Age: 15-49 years (Percent) (%)']!;
+  return dd;
 };
 
 function useData() {

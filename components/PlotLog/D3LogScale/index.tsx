@@ -3,7 +3,7 @@ import { line } from "d3-shape";
 import { scaleTime, scaleLog } from "d3-scale";
 import { extent, max } from "d3-array";
 import { timeFormat } from "d3-time-format";
-import { SVGContainer } from "../../../typings";
+import { Range, SVGContainer } from "../../../typings";
 import styles from "./D3LogScale.module.css";
 import YMarkerLine from "./YMarkerLine";
 import XMarkerLine from "./XMarkerLine";
@@ -14,16 +14,16 @@ const margin = { top: 40, right: 50, bottom: 65, left: 100 };
 const xAxisLabelOffset = 55;
 const yAxisLabelOffset = 45;
 
-interface Props extends SVGContainer {
-  data: any[];
-  xAttribute: string;
-  yAttribute: string;
+interface Props<T> extends SVGContainer {
+  data: T[];
+  xAttribute: keyof T;
+  yAttribute: keyof T;
   xAxisLabel: string;
   yAxisLabel: string;
   xTimeFormat: string;
 }
 
-function LogScale({
+function LogScale<T>({
   width,
   height,
   data,
@@ -32,27 +32,27 @@ function LogScale({
   xAxisLabel,
   yAxisLabel,
   xTimeFormat,
-}: Props) {
+}: Props<T>) {
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
 
-  const xValue = (d: any) => d[xAttribute];
-  const yValue = (d: any) => d[yAttribute];
+  const xValue = (d: T) => d[xAttribute] as unknown as Date;
+  const yValue = (d: T) => d[yAttribute] as unknown as number;
 
   const xAxisTickFormat = timeFormat(xTimeFormat);
 
   const xScale = scaleTime()
     // .domain([min(data, xValue), max(data, xValue)] as [Date, Date])
-    .domain(extent(data, xValue) as [Date, Date])
+    .domain(extent(data, xValue) as Range<Date>)
     .range([0, innerWidth]);
   // .nice();
 
   const yScale = scaleLog()
-    .domain([1, max(data, yValue)])
+    .domain([1, max(data, yValue)] as Range<number>)
     .range([innerHeight, 0]);
   // .nice();
 
-  const lineGenerator = line()
+  const lineGenerator = line<T>()
     .x((d) => xScale(xValue(d)))
     .y((d) => yScale(yValue(d)));
 

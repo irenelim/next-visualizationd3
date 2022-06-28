@@ -1,6 +1,4 @@
 import Head from "next/head";
-// import { csv } from 'd3-fetch'
-// import { DSVRowArray } from 'd3-dsv';
 import {
   forceSimulation,
   forceManyBody,
@@ -9,8 +7,6 @@ import {
   forceX,
   forceY,
   Simulation,
-  SimulationLinkDatum,
-  SimulationNodeDatum,
 } from "d3-force";
 import { select, selectAll } from "d3-selection";
 import { hierarchy, HierarchyLink, HierarchyNode } from 'd3-hierarchy';
@@ -28,48 +24,45 @@ import Home from "../components/Home";
  * https://medium.com/analytics-vidhya/easily-show-relationships-draw-simple-force-graph-with-react-d3-utilizing-typescript-d7e9d5326b6
  * */
 
-// interface Props {
-//     data: DSVRowArray;
-//   }
 
-const MAIN_NODE_SIZE = 40;
-const CHILD_NODE_SIZE = 15;
-const LEAF_NODE_SIZE = 5;
-const DEFAULT_DISTANCE = 20;
-const MAIN_NODE_DISTANCE = 90;
-const LEAF_NODE_DISTANCE = 30;
-const MANY_BODY_STRENGTH = -20;
+// const MAIN_NODE_SIZE = 40;
+// const CHILD_NODE_SIZE = 15;
+// const LEAF_NODE_SIZE = 5;
+// const DEFAULT_DISTANCE = 20;
+// const MAIN_NODE_DISTANCE = 90;
+// const LEAF_NODE_DISTANCE = 30;
+const MANY_BODY_STRENGTH = -250;
 
 // Generated with https://paletton.com/#uid=75x0u0kigkU8ZuBdTpdmbh6rjc7
-const colors = [
-  ["#9D4452", "#E6A6B0", "#BE6B78", "#812836", "#5B0D1A"],
-  ["#A76C48", "#F4CAAF", "#C99372", "#884E2A", "#602E0E"],
-  ["#2E6B5E", "#719D93", "#498175", "#1B584A", "#093E32"],
-  ["#538E3D", "#A6D096", "#75AC61", "#3A7424", "#1F520C"],
-];
+// const colors = [
+//   ["#9D4452", "#E6A6B0", "#BE6B78", "#812836", "#5B0D1A"],
+//   ["#A76C48", "#F4CAAF", "#C99372", "#884E2A", "#602E0E"],
+//   ["#2E6B5E", "#719D93", "#498175", "#1B584A", "#093E32"],
+//   ["#538E3D", "#A6D096", "#75AC61", "#3A7424", "#1F520C"],
+// ];
 
 function stateForce() {
   // const { nodes, links } = data;
   const root = hierarchy(initialData);
-  const nodes = root.descendants();
-  const links = root.links();
+  const nodes = root.descendants() as unknown as Types.Node[];
+  const links = root.links() as unknown as Types.Link[];
 
   const { width, height } = useWindowSize();
-  const ref = useRef<SVGSVGElement>(null);
+  // const ref = useRef<SVGSVGElement>(null);
   const [simulation, setSimulation] = useState<
-  Simulation<SimulationNodeDatum, undefined> | undefined
+  Simulation<Types.Node, Types.Link> | undefined
   >();
 
   const simulatePositions = useCallback(() => {
-    const simu = forceSimulation(nodes as SimulationNodeDatum[])
+    const simu = forceSimulation(nodes)
       .force("center", forceCenter(width, height))
       // .force("center", forceCenter(width / 2, height / 2))
       .force("charge", forceManyBody().strength(MANY_BODY_STRENGTH))
       .force(
         "link",
-        forceLink(links as any[])
+        forceLink(links)
           // .id((d) => (d as Types.Node).id)
-          .id((d) => (d as any).data.name)
+          .id((d) => (d as Types.Node).data.name)
           .distance((link) => 30)
           // .strength(0.5)
       )
@@ -135,9 +128,9 @@ function stateForce() {
         <h1 className="text-2xl font-bold">Force Diagram</h1>
 
         <svg width={width} height={height} viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}>
-          <Links links={links as any[]} />
-          <Circles nodes={nodes as any[]} restartDrag={restartDrag} stopDrag={stopDrag} />
-          <Labels nodes={nodes as any[]} />
+          <Links links={links} />
+          <Circles nodes={nodes} restartDrag={restartDrag} stopDrag={stopDrag} />
+          <Labels nodes={nodes} />
         </svg>
       </main>
     </div>

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { DSVParsedArray } from "d3-dsv";
+import { DSVRowArray } from "d3-dsv";
 import { format } from 'd3-format';
 import { timeParse } from 'd3-time-format';
 import useData from "../hooks/useDataGeneric";
@@ -18,14 +18,15 @@ const dateSpecifier ='%m/%d/%y';
 const parseDate = timeParse(dateSpecifier);
 
 // get timeseries data for each country
-const transform = (raw: DSVParsedArray<string>) => {
+const transform = (raw: DSVRowArray<string>) => {
   const days = raw.columns.slice(5, 65); // first 4 columns are not Date
-  const countriesData = raw.filter((d: any) => !d['Province/State']);
-  return countriesData.map((d:any) => {
-    const countryName:string = d['Country/Region'];
+  const countriesData = raw.filter((d) => !d['Province/State']);
+  return countriesData.map((d) => {
+    const countryName = d['Country/Region'];
+    // what type should it be?
     const countryTimeSeries: any = days.map(day => ({
       date: parseDate(day.toString()),
-      deathTotal: +d[day],
+      deathTotal: +d[day]!,
       countryName: countryName
     }));
     countryTimeSeries.countryName = countryName;
@@ -36,13 +37,13 @@ const transform = (raw: DSVParsedArray<string>) => {
 
 function CovidLog() {
   const { width, height } = useWindowSize();
-  const rawData = useData(csvUrl) as DSVParsedArray<string>;
+  const rawData = useData(csvUrl);
   if (!rawData) {
     return <pre>Loading...</pre>;
   }
   
   const latestDateColumn = rawData.columns[rawData.columns.length - 1];
-  const deathTotal = rawData.map(d => +d[latestDateColumn]).reduce(sum, 0);
+  const deathTotal = rawData.map(d => +d[latestDateColumn]!).reduce(sum, 0);
     
   const data = transform(rawData);
 

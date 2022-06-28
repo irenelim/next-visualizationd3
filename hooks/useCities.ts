@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { csv } from "d3-fetch";
-import { DSVParsedArray, DSVRowString } from "d3-dsv";
-import { City, ParsedRow } from "../typings";
+import { DSVRowString } from "d3-dsv";
+import { City } from "../typings";
 
 
 const citiesUrl =

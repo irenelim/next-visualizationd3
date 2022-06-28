@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { line } from "d3-shape";
 import { scaleTime, scaleLog } from "d3-scale";
 import { extent, max } from "d3-array";
-import { SVGContainer } from "../../typings";
+import { CovidDeath, Range, SVGContainer } from "../../typings";
 import styles from "./Multiline.module.css";
 
 import XAxis from "./XAxis";
@@ -14,45 +14,46 @@ const margin = { top: 40, right: 50, bottom: 65, left: 100 };
 
 const epsilon = 1;
 
-interface Props extends SVGContainer {
+interface Props<T> extends SVGContainer {
   data: any[];
-  xAttribute: string;
-  yAttribute: string;
+  xAttribute: keyof T;
+  yAttribute: keyof T;
 }
 
-function Multiline({
+function Multiline<T extends CovidDeath>({
   width,
   height,
   data,
   xAttribute,
   yAttribute
-}: Props) {
-  const [activeRow, setActiveRow] = useState<any>(null);
+}: Props<T>) {
+  const [activeRow, setActiveRow] = useState<T | null>(null);
 
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
 
-  const xValue = (d: any) => d[xAttribute];
-  const yValue = (d: any) => d[yAttribute];
+  const xValue = (d: T) => d[xAttribute] as unknown as Date;
+  const yValue = (d: T) => d[yAttribute] as unknown as number;
 
-  const allData = useMemo(
+  const allData: T[] = useMemo(
     () => data.reduce((acc, val) => acc.concat(val), []),
     []
   );
 
+
   const xScale = scaleTime()
-    .domain(extent(allData, xValue) as any)
+    .domain(extent(allData, xValue) as Range<Date>)
     .range([0, innerWidth]);
   // .nice();
 
   const yScale = scaleLog()
-    .domain([epsilon, max(allData, yValue) as any])
+    .domain([epsilon, max(allData, yValue) as number])
     .range([innerHeight, 0]);
   // .nice();
 
   const lineGenerator: any = useMemo(
     () =>
-      line()
+      line<T>()
         .x((d) => xScale(xValue(d)))
         .y((d) => yScale(epsilon + yValue(d))),
     []
@@ -97,9 +98,8 @@ function Multiline({
               }
             />
             <g
-              transform={`translate(${lineGenerator.x()(
-                activeRow
-              )},${lineGenerator.y()(activeRow)})`}
+              transform={`translate(${lineGenerator.x()(activeRow)},
+                ${lineGenerator.y()(activeRow)})`}
             >
               <circle r={2} />
               <Tooltip className={styles.tooltipStroke} activeRow={activeRow} />

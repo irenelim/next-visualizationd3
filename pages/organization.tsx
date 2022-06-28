@@ -8,13 +8,10 @@ import {
   forceCenter,
   forceX,
   forceY,
-  Simulation,
-  SimulationLinkDatum,
-  SimulationNodeDatum,
 } from "d3-force";
 import { select, selectAll } from "d3-selection";
 import { drag } from 'd3-drag';
-import { hierarchy, HierarchyLink, HierarchyNode } from 'd3-hierarchy';
+import { hierarchy } from 'd3-hierarchy';
 
 import useWindowSize from "../hooks/useWindowSize";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -25,10 +22,6 @@ import Home from "../components/Home";
  * https://vizhub.com/curran/f192e44054aa4731b5ceba1b833028d6?edit=files&file=index.js
  * https://medium.com/analytics-vidhya/easily-show-relationships-draw-simple-force-graph-with-react-d3-utilizing-typescript-d7e9d5326b6
  * */
-
-// interface Props {
-//     data: DSVRowArray;
-//   }
 
 const MAIN_NODE_SIZE = 40;
 const CHILD_NODE_SIZE = 15;
@@ -63,17 +56,7 @@ const colors = [
 //   // { source: 'Art Web', target: 'Silicon Valley Creates' }, // Art Web -> Silicon Valley Creates
 // ];
 
-interface Node {
-  name: string
-  radiusSize?: number
-  fillColor?: string
-}
-type Link = {
-  source: string
-  target: string
-}
-
-const groupColor: any = (item: { index: number, depth: number, parent: any }) => {
+const groupColor: Function = (item: Types.Node) => {
   if (item.parent && item.depth > 1) {
     return groupColor(item.parent);
   }
@@ -84,23 +67,23 @@ const groupColor: any = (item: { index: number, depth: number, parent: any }) =>
 function organization() {
   // const { nodes, links } = data;
   const root = hierarchy(initialData);
-  const nodes = root.descendants();
-  const links = root.links();
+  const nodes = root.descendants() as unknown as Types.Node[];
+  const links = root.links() as unknown as Types.Link[];
 
   const { width, height } = useWindowSize();
   const ref = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     if (ref.current) {
-      const simulation = forceSimulation(nodes as SimulationNodeDatum[])
+      const simulation = forceSimulation(nodes)
         // .force("center", forceCenter(width / 2, height / 2))
         .force("center", forceCenter)
         .force("charge", forceManyBody().strength(MANY_BODY_STRENGTH))
         .force(
           "link",
-          forceLink(links as any[])
+          forceLink(links)
             // .id((d) => (d as Types.Node).id)
-            .id((d) => (d as any).data.name)
+            .id((d) => (d as Types.Node).data.name)
             .distance((link) => 30)
         )
         .force("x", forceX())
@@ -111,14 +94,14 @@ function organization() {
       svg.attr("viewBox", [-width / 2, -height / 2, width, height]);
 
       const dragInteraction = drag<SVGCircleElement, any>()
-        // .on('start', (event, node: any) => {
+        // .on('start', (event, node) => {
         //   // node.fx = event.x;
         //   // node.fy = event.y;
         //   if (!event.active && simulation) {
         //     simulation.alpha(1).restart();
         //   }
         // })
-        .on('drag', (event, node: any) => {
+        .on('drag', (event, node) => {
           node.fx = event.x;
           node.fy = event.y;
           if (simulation) {
@@ -126,7 +109,7 @@ function organization() {
             simulation.restart();
           }
         })
-        // .on('end', (event, node: any) => {          
+        // .on('end', (event, node) => {          
         //   if (!event.active) {
         //     simulation.alphaTarget(0);
         //   }

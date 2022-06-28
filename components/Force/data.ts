@@ -97,26 +97,23 @@ export const data = {
 
 export namespace Types {
     export type Node = {
-      // id: string
-      name: string;
-    //   group: number
+      name?: string;
       radiusSize?: number;
       fillColor?: string;
-      depth?: number;
-      index?: number;
-      parent?: any;
-      data?: any;
-
+      depth: number;
+      index: number;
+      parent: Node | null;
+      data: { name: string };
     }
     export type Link = {
-      source: any
-      target: any
+      source: Node
+      target: Node
       type?: string
     }
-    export type DataObject = {
-      nodes: Node[]
-      links: Link[]
-    }
+    // export type DataObject = {
+    //   nodes: Node[]
+    //   links: Link[]
+    // }
     export type point = {
       x: number
       y: number
@@ -127,4 +124,5 @@ export namespace Types {
       fx: number | null
       fy: number | null
     }
+
   }

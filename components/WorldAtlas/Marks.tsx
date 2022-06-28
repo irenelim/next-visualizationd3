@@ -1,4 +1,4 @@
-import { FeatureCollection, MultiLineString } from "geojson";
+import { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 import {
   geoNaturalEarth1,
   geoPath,
@@ -7,24 +7,24 @@ import {
 } from "d3-geo";
 import { ScalePower } from "d3";
 import { useMemo } from "react";
-import { City, Coords, Dimension, WorldAtlas } from "../../typings";
+import { Coords, Dimension, WorldAtlas } from "../../typings";
 
-interface Props {
+interface Props<T> {
   // worldAtlas: {
   //   // countries: FeatureCollection;
   //   land: FeatureCollection;
   //   interiors: MultiLineString;
   // };
   worldAtlas: WorldAtlas;
-  data: City[];
+  data: T[];
   sizeScale: ScalePower<number, number, never>;
-  sizeValue: (d: City) => number;
+  sizeValue: (d: T) => number;
   styles: { [key: string]: string };
-  coords: Coords;
+  coords: Coords<T>;
   dimension: Dimension;
 }
 
-export const Marks = ({
+export const Marks = <T extends unknown>({
   worldAtlas: { land, interiors },
   data,
   sizeScale,
@@ -32,10 +32,10 @@ export const Marks = ({
   styles,
   coords,
   dimension,
-}: Props) => {
+}: Props<T>) => {
   const projection = geoNaturalEarth1().fitSize(
     [dimension.width, dimension.height],
-    land
+    land as FeatureCollection<Geometry, GeoJsonProperties>
   );
   const path = geoPath(projection);
   const graticule = geoGraticule();
@@ -53,7 +53,7 @@ export const Marks = ({
               className={styles.graticules}
               d={path(graticule()) as string}
             />
-            {land.features.map((feature, i) => (
+            {land!.features.map((feature, i) => (
               <path
                 className={styles.land}
                 key={feature?.properties?.name || `f${i}`}

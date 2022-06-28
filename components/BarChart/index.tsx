@@ -1,5 +1,4 @@
 import React from "react";
-import { DSVRowArray } from "d3-dsv";
 import { scaleBand, scaleLinear } from "d3-scale";
 import { max } from "d3-array";
 import { format } from "d3-format";

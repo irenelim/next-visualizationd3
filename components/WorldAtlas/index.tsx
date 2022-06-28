@@ -9,7 +9,7 @@ interface Props extends SVGContainer {
   worldAtlas: WorldAtlas;
   cities: City[];
   sizeAttribute: keyof City;
-  coords: Coords;
+  coords: Coords<City>;
   dimension: Dimension;
 }
 

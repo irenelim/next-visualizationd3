@@ -1,46 +1,46 @@
 import React from "react";
 import { scaleLog, scaleTime } from "d3-scale";
 import { extent, max } from "d3-array";
-import { SVGContainer } from "../../typings";
+import { Range, SVGContainer } from "../../typings";
 import { AxisBottom } from "../LineChart/AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
 import { timeFormat } from "d3-time-format";
 
-const margin = { top: 20, right: 200, bottom: 68, left: 90 };
+const margin = { top: 20, right: 50, bottom: 68, left: 90 };
 const xAxisLabelOffset = 55;
 const yAxisLabelOffset = 45;
 const circleRadius = 2;
 
-interface Props extends SVGContainer {
-  data: any[];
-  xAttribute?: string;
-  yAttribute?: string;
+interface Props<T> extends SVGContainer {
+  data: T[];
+  xAttribute: keyof T;
+  yAttribute: keyof T;
   xAxisLabel?: string;
   yAxisLabel?: string;
 }
 
-function PlotLog({
+function PlotLog<T>({
   width,
   height,
   data,
-  xAttribute = "petal_length",
-  yAttribute = "sepal_width",
-  xAxisLabel = "Petal Length",
-  yAxisLabel = "Sepal Width",
-}: Props) {
+  xAttribute,
+  yAttribute,
+  xAxisLabel = "",
+  yAxisLabel = "",
+}: Props<T>) {
  
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
 
-  const xValue = (d: any) => new Date(d[xAttribute]);
+  const xValue = (d: T) => new Date(d[xAttribute] as unknown as string);
 
-  const yValue = (d: any) => +d[yAttribute];
+  const yValue = (d: T) => +d[yAttribute];
 
   const xAxisTickFormat = timeFormat('%m/%d/%Y');
 
   const xScale = scaleTime()
-    .domain(extent(data, xValue) as [Date, Date])
+    .domain(extent(data, xValue) as Range<Date>)
     .range([0, innerWidth])
     .nice();
 
@@ -50,7 +50,7 @@ function PlotLog({
 
 
   return (
-    <svg className="svg" width={width} height={height}>
+    <svg className="svg" viewBox={`0 0 ${width} ${height}`}>
       <g transform={`translate(${margin.left},${margin.top})`}>
         {/* tick lines */}
         <AxisBottom
@@ -85,7 +85,7 @@ function PlotLog({
           yScale={yScale}
           xValue={xValue}
           yValue={yValue}
-          tooltipFormat={xAxisTickFormat}
+          // tooltipFormat={xAxisTickFormat}
           circleRadius={circleRadius}
         />
       </g>

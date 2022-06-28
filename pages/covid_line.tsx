@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { DSVParsedArray } from "d3-dsv";
+import { DSVRowArray } from "d3-dsv";
 import { format } from 'd3-format';
 import { timeParse } from 'd3-time-format';
 import LineChart from "../components/LineChart/D3Line";
@@ -16,23 +16,30 @@ const commaFormatter = format(',');
 
 const dateSpecifier ='%m/%d/%y';
 const parseDate = timeParse(dateSpecifier);
-const transform = (raw: DSVParsedArray<string>) => {
+const transform = (raw: DSVRowArray<string>) => {
   const days = raw.columns.slice(-60);
   return days.map(day => ({
       date: parseDate(day.toString()),
-      deathTotal: raw.map(d => +d[day]).reduce(sum, 0)
+      deathTotal: raw.map(d => +d[day]!).reduce(sum, 0)
     })
   )
 };
 
 function lines() {
   const { width, height } = useWindowSize();
-  const rawData = useData(csvUrl) as DSVParsedArray<string>;
+  const rawData = useData(csvUrl);
+
+  // 12/31/21: "7356" ...
+  // Country/Region: "Afghanistan"
+  // Lat: "33.93911"
+  // Long: "67.709953"
+  // Province/State: "" or string
+
   if (!rawData) {
     return <pre>Loading...</pre>;
   }
   const latestDateColumn = rawData.columns[rawData.columns.length - 1];
-  const deathTotal = rawData.map(d => +d[latestDateColumn]).reduce(sum, 0);
+  const deathTotal = rawData.map(d => +d[latestDateColumn]!).reduce(sum, 0);
 
   const data = transform(rawData);
   // console.log(data);

@@ -20,13 +20,12 @@ function WorldMap() {
   const { width, height } = useWindowSize();
   // const { data, error }  = useFetchD3Json<Topology>(jsonUrl);
   const { data } = useFetch<Topology<TopoObject>>(jsonUrl);
-  console.log(data)
   const cities: City[] | null = useCities();
   const [worldAtlas, setWorldAtlas] = useState<WorldAtlas | null>(null);
 
   useEffect(() => {
     if (data && data.objects) {
-      const { countries, land }:any = data.objects;
+      const { countries, land } = data.objects;
       const geojsonData: WorldAtlas = {
         // countries: feature(data, countries),
         land: feature(data, land) as unknown as FeatureCollection<Geometry, GeoJsonProperties>,

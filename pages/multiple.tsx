@@ -1,24 +1,16 @@
 import Head from "next/head";
-import { DSVRowArray } from "d3-dsv";
 import { Topology } from "topojson-specification";
 import { feature, mesh } from "topojson-client";
 import useFetch from "../hooks/useFetch";
 import { useEffect, useState } from "react";
-import { Feature, MultiLineString, Point, GeoJsonProperties } from "geojson";
-import Map from "../components/WorldAtlas";
-import AggChart from "../components/AggregationChart";
+import { GeoJsonProperties, FeatureCollection, Geometry } from "geojson";
+// import AggChart from "../components/AggregationChart";
 import BubbleMap from "../components/WorldAtlas/BubbleMap";
 import DateHistogram from "../components/AggregationChart/DateHistogram";
 import useWindowSize from "../hooks/useWindowSize";
 import Home from "../components/Home";
 import useData from "../hooks/useData2";
-import { Data } from "../typings";
-interface WorldAtlas {
-  // data: Topology;
-  land: Feature<Point, GeoJsonProperties>;
-  // land: FeatureCollection;
-  interiors: MultiLineString;
-}
+import { MissingMigrant, TopoObject, WorldAtlas } from "../typings";
 
 const csvUrl =
 "https://gist.githubusercontent.com/curran/a9656d711a8ad31d812b8f9963ac441c/raw/MissingMigrants-Global-2019-10-08T09-47-14-subset.csv";
@@ -28,22 +20,21 @@ const jsonUrl = "https://unpkg.com/world-atlas@2.0.2/countries-50m.json";
 
 const dateHistogramSize = 0.2; // 20%
 
-const xValue = (d: Data) => new Date(d['Reported Date']);
+const xValue = (d: MissingMigrant) => new Date(d['Reported Date']);
 
 function multiple() {
   const { width, height } = useWindowSize();
-  const data = useData(csvUrl) as Data;
-  const { data: world } = useFetch<Topology>(jsonUrl);
-  // const cities: City[] | null = useCities();
+  const data = useData(csvUrl) as MissingMigrant[];
+  const { data: world } = useFetch<Topology<TopoObject>>(jsonUrl);
   const [worldAtlas, setWorldAtlas] = useState<WorldAtlas | null>(null);
-  const [brushExtent, setBrushExtent] = useState<[Date | string | number, Date | string | number] | null>(null);
+  const [brushExtent, setBrushExtent] = useState<[Date, Date] | null>(null);
   
   useEffect(() => {
     if (world && world.objects) {
-      const { countries, land }: any = world.objects;
+      const { countries, land } = world.objects;
       const geojsonData: WorldAtlas = {
         // countries: feature(data, countries),
-        land: feature(world, land),
+        land: feature(world, land) as unknown as FeatureCollection<Geometry, GeoJsonProperties>,
         interiors: mesh(world, countries, (a, b) => a !== b),
       };
       setWorldAtlas(geojsonData);
@@ -77,7 +68,7 @@ function multiple() {
               data={data}
               filteredData={filteredData}
               sizeAttribute="Total Dead and Missing"
-              coords={(d: any) => d.coords}
+              coords={(d: MissingMigrant) => d.coords}
               dimension={{ width, height }}
             />
             <g transform={`translate(0,${height - dateHistogramSize * height})`}>

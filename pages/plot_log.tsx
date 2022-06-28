@@ -1,16 +1,22 @@
 import Head from "next/head";
-import { csv } from "d3-fetch";
-import { DSVRowArray } from "d3-dsv";
 import PlotLog from "../components/PlotLog";
 import useWindowSize from "../hooks/useWindowSize";
+import useData from "../hooks/useData2";
 import Home from "../components/Home";
+import { MissingMigrant } from "../typings";
 
-interface Props {
-  data: DSVRowArray;
-}
+const csvUrl =
+"https://gist.githubusercontent.com/curran/a9656d711a8ad31d812b8f9963ac441c/raw/MissingMigrants-Global-2019-10-08T09-47-14-subset.csv";
 
-function plots({ data }: Props) {
+
+function plots() {
+  const data = useData(csvUrl) as MissingMigrant[];
   const { width, height } = useWindowSize();
+
+  if (!data) {
+    return <pre>Loading...</pre>;
+  }
+  
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
@@ -35,25 +41,25 @@ function plots({ data }: Props) {
   );
 }
 
-export async function getStaticProps() {
-  const csvUrl =
-    "https://gist.githubusercontent.com/curran/a9656d711a8ad31d812b8f9963ac441c/raw/MissingMigrants-Global-2019-10-08T09-47-14-subset.csv";
-  const row = (d: any) => {
-    d["Total Dead and Missing"] = +d["Total Dead and Missing"];
-    // d["Reported Date"] = new Date(d["Reported Date"]);
-    d.coords = d["Location Coordinates"]
-      .split(",")
-      .map((d: string) => +d)
-      .reverse();
-    return d;
-  };
-  const data = await csv(csvUrl, row);
+// export async function getStaticProps() {
+//   const csvUrl =
+//     "https://gist.githubusercontent.com/curran/a9656d711a8ad31d812b8f9963ac441c/raw/MissingMigrants-Global-2019-10-08T09-47-14-subset.csv";
+//   const row = (d: any) => {
+//     d["Total Dead and Missing"] = +d["Total Dead and Missing"];
+//     // d["Reported Date"] = new Date(d["Reported Date"]);
+//     d.coords = d["Location Coordinates"]
+//       .split(",")
+//       .map((d: string) => +d)
+//       .reverse();
+//     return d;
+//   };
+//   const data = await csv(csvUrl, row);
 
-  return {
-    props: {
-      data,
-    },
-  };
-}
+//   return {
+//     props: {
+//       data,
+//     },
+//   };
+// }
 
 export default plots;

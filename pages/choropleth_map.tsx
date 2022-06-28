@@ -6,18 +6,18 @@ import ChoroplethMap from "../components/ChoroplethMap";
 import useFetch from "../hooks/useFetch";
 import useData from "../hooks/useData";
 import { useEffect, useState } from "react";
-import { Feature, MultiLineString, Point, GeoJsonProperties } from "geojson";
-import { DSVRowArray } from "d3-dsv";
 import useWindowSize from "../hooks/useWindowSize";
 import Home from "../components/Home";
+import { AidsData, CountryCode, TopoObject, WorldAtlas } from "../typings";
+import { FeatureCollection, GeoJsonProperties, Geometry } from "geojson";
 
-interface Props {
-  // data: Topology;
-  countries: Feature<Point, GeoJsonProperties>;
-  // land: Feature<Point, GeoJsonProperties>;
-  // land: FeatureCollection;
-  interiors: MultiLineString;
-}
+// interface Props {
+//   // data: Topology;
+//   countries: Feature<Point, GeoJsonProperties>;
+//   // land: Feature<Point, GeoJsonProperties>;
+//   // land: FeatureCollection;
+//   interiors: MultiLineString;
+// }
 
 const jsonUrl = "https://unpkg.com/world-atlas@2.0.2/countries-50m.json";
 const selectedYear = '2017';
@@ -29,16 +29,16 @@ const iso3166jsonUrl =
 function WorldMap() {
   const { width, height } = useWindowSize();
   // const { data, error }  = useFetchD3Json<Topology>(jsonUrl);
-  const { data } = useFetch<Topology>(jsonUrl);
-  const { data: codes } = useFetch<DSVRowArray>(iso3166jsonUrl);
-  const cities: (DSVRowArray | null)= useData() as DSVRowArray;
-  const [worldAtlas, setWorldAtlas] = useState<Props | null>(null);
+  const { data } = useFetch<Topology<TopoObject>>(jsonUrl);
+  const { data: codes } = useFetch<CountryCode[]>(iso3166jsonUrl);
+  const cities = useData() as AidsData[];
+  const [worldAtlas, setWorldAtlas] = useState<WorldAtlas | null>(null);
 
   useEffect(() => {
     if (data && data.objects) {
-      const { countries, land }: any = data.objects;
-      const geojsonData: Props = {
-        countries: feature(data, countries),
+      const { countries, land } = data.objects;
+      const geojsonData: WorldAtlas = {
+        countries: feature(data, countries) as unknown as FeatureCollection<Geometry, GeoJsonProperties>,
         // land: feature(data, land),
         interiors: mesh(data, countries, (a, b) => a !== b),
       };

@@ -1,31 +1,31 @@
 import React from "react";
-import { SVGContainer } from "../../typings";
+import { AidsData, CountryCode, SVGContainer, WorldAtlas } from "../../typings";
 import { max } from "d3-array";
 import { scaleSequential, NumberValue } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { Marks } from "./Marks";
 import styles from "./ChoroplethMap.module.css";
 
-interface Props extends SVGContainer {
-  worldAtlas: any;
-  data: any;
-  codes: any;
+interface Props<T> extends SVGContainer {
+  worldAtlas: WorldAtlas;
+  data: T[];
+  codes: CountryCode[];
   //   rowByCountry: Map<any, any>;
-  sizeAttribute: string;
+  sizeAttribute: keyof T;
 }
 
 // const margin = { top: 20, right: 30, bottom: 65, left: 90 };
 // const xAxisLabelOffset = 55;
 // const yAxisLabelOffset = 45;
 
-function ChoroplethMap({
+function ChoroplethMap<T extends AidsData>({
   width,
   height,
   worldAtlas,
   data,
   sizeAttribute,
   codes
-}: Props) {
+}: Props<T>) {
   // const innerHeight = height - margin.top - margin.bottom;
   // const innerWidth = width - margin.left - margin.right;
 
@@ -36,22 +36,19 @@ function ChoroplethMap({
 //     numericCodeByAlphaCode.set(alpha3Code, numericCode);
 //   });
 
-  const rowByCountryCode = new Map();
-  data.forEach((d: any) => {
+  const rowByCountryCode = new Map<string, T>();
+  (data).forEach((d: T) => {
     const alpha3Code = d.Code;
     // const numericCode = numericCodeByAlphaCode.get(alpha3Code);
-    const numericCode = codes.find((c:any) => c["alpha-3"] === alpha3Code)?.["country-code"];
-    console.log(numericCode, alpha3Code);
+    const numericCode = codes.find((c: CountryCode) => c["alpha-3"] === alpha3Code)?.["country-code"];
+    // console.log(numericCode, alpha3Code);
     if (numericCode) rowByCountryCode.set(numericCode, d);
   });
-//   console.log(rowByCountryCode);
 
-  const colorValue = (d: any) => d[sizeAttribute];
+  const colorValue = (d: T) => d[sizeAttribute] as unknown as number;
 
-  const colorScale = scaleSequential(interpolateYlOrRd).domain([
-    0,
-    max(data, colorValue),
-  ] as Iterable<NumberValue>);
+  const colorScale = scaleSequential(interpolateYlOrRd)
+    .domain([0, max(data, colorValue) as number]);
 
   return (
     <svg className={"svg"} width={width} height={height}>
@@ -61,6 +58,7 @@ function ChoroplethMap({
         rowByCountry={rowByCountryCode}
         colorScale={colorScale}
         colorValue={colorValue}
+        dimension={{ width, height }}
       />
     </svg>
   );

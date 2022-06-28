@@ -1,16 +1,17 @@
 import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
+import { CovidDeath } from "../../typings";
 
-interface Props {
+interface Props<T> {
   className: string;
-  activeRow: { [key: string]: string | number | Date };
+  activeRow: T;
 }
 
 const formatDate = timeFormat("%B %d, %Y");
 const formatComma = format(",");
 
-function Tooltip({ className, activeRow }: Props) {
+function Tooltip<T extends CovidDeath>({ className, activeRow }: Props<T>) {
   return (
     <text className={className} x={-10} y={-10} textAnchor="end">
       <tspan x="0" dy=".6em">
